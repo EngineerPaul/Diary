@@ -1,0 +1,573 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .marker {
+        margin-right: 3px;
+    }
+    .datetime {
+        display: inline-block;
+
+        p {
+            display: inline-block;
+        }
+    }
+    .coll2 span {
+        white-space: pre-wrap;
+    }
+</style>
+
+<div class="content">
+<div class="content-notes">
+    <div class="management-bar">
+        <div class="management-bar-left">
+            <div class="btn-default" id="modalCreateBtn" data-modal="modalCreater">
+                Создать
+            </div>
+            <div class="btn-default" id="modalCreateFBtn" data-modal="modalFCreater">
+                Создать папку
+            </div>
+        </div>
+        <div class="search-block">
+            <div class="search-bar">
+                <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Поиск" value="" />
+                <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+                    </svg>
+                </button>
+            </div>
+            <div id="searchDropdown" class="dropdown-content">
+                <!-- <a href="#about">О Нас</a>
+                <a href="#base">Основа</a>
+                <a href="#blog">Блог</a>
+                <a href="#contact">Контакт</a>
+                <a href="#custom">Заказ</a>
+                <a href="#support">Поддержка</a>
+                <a href="#tools">Инструменты</a> -->
+            </div>
+        </div>
+        <div class="management-bar-right">
+            <div class="btn-default" id="modalSortBtn" data-modal="modalSorter">
+                Сортировка
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="content-window">
+        <div class="dd-area" id="objectsList">
+            <div class="dd-object folderObject">
+                <div class="block-row">
+                    <div class="coll1">
+                        <div class="marker" data-color="yellow"></div>
+                        <svg class="content-svg" viewBox="0 0 24 24">
+                            <path d="m23.493,11.017c-.487-.654-1.234-1.03-2.05-1.03h-.443v-1.987c0-2.757-2.243-5-5-5h-5.056c-.154,0-.31-.037-.447-.105l-3.155-1.578c-.414-.207-.878-.316-1.342-.316h-2C1.794,1,0,2.794,0,5v13c0,2.757,2.243,5,5,5h12.558c2.226,0,4.15-1.432,4.802-3.607l1.532-6.116c.234-.782.089-1.605-.398-2.26ZM2,18V5c0-1.103.897-2,2-2h2c.154,0,.31.037.447.105l3.155,1.578c.414.207.878.316,1.342.316h5.056c1.654,0,3,1.346,3,3v1.987h-10.385c-1.7,0-3.218,1.079-3.789,2.72l-2.19,7.138c-.398-.509-.636-1.15-.636-1.845Zm19.964-5.253l-1.532,6.115c-.384,1.279-1.539,2.138-2.874,2.138H5c-.208,0-.411-.021-.607-.062l2.334-7.609c.279-.803,1.039-1.342,1.889-1.342h12.828c.242,0,.383.14.445.224.062.084.156.259.075.536Z"/>
+                        </svg>
+                    </div>
+                    <div class="coll2">
+                        <div class="title">
+                            <p>
+                                folder 1
+                            </p>
+                        </div>
+                    </div>
+                    <div class="coll3">
+                        <div class="labels">labels</div>
+                        <svg class="content-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z"/>
+                            <path d="M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="dd-object noticesObject">
+                <div class="block-row">
+                    <div class="coll1">
+                        <div class="marker" data-color="yellow"></div>
+                        <svg class="content-svg" viewBox="0 0 24 24">
+                            <path d="M23.259,16.2l-2.6-9.371A9.321,9.321,0,0,0,2.576,7.3L.565,16.35A3,3,0,0,0,3.493,20H7.1a5,5,0,0,0,9.8,0h3.47a3,3,0,0,0,2.89-3.8ZM12,22a3,3,0,0,1-2.816-2h5.632A3,3,0,0,1,12,22Zm9.165-4.395a.993.993,0,0,1-.8.395H3.493a1,1,0,0,1-.976-1.217l2.011-9.05a7.321,7.321,0,0,1,14.2-.372l2.6,9.371A.993.993,0,0,1,21.165,17.605Z"/>
+                        </svg>
+                    </div>
+                    <div class="coll2">
+                        <div class="datetime" style="display: inline-block;">
+                            <p style="display: inline-block;">
+                                23:00 15.05.2025
+                            </p>
+                        </div>
+                        <span style="white-space: pre-wrap;"> — </span>
+                        <div class="title" style="display: inline-block;">
+                            <p>
+                                notice 1
+                            </p>
+                        </div>
+                    </div>
+                    <div class="coll3">
+                        <div class="labels">labels</div>
+                        <svg class="content-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z"/>
+                            <path d="M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="dd-object noteObject">
+                <div class="block-row">
+                    <div class="coll1">
+                        <div class="marker" data-color="yellow"></div>
+                        <svg class="content-svg" viewBox="2 0 20 24">
+                            <path d="m7 12h10v2h-10zm0 6h7v-2h-7zm15-10.414v16.414h-20v-21a3 3 0 0 1 3-3h9.414zm-7-.586h3.586l-3.586-3.586zm5 15v-13h-7v-7h-8a1 1 0 0 0 -1 1v19z"/>
+                        </svg>
+                    </div>
+                    <div class="coll2">
+                        <div class="title">
+                            <p>
+                                note-block 1note-block 1note-block 1note-block 1note-block 1note-block 1note-block 1note-block 1note-block 1note-block 1note-block 1note-block 1note-block 1
+                            </p>
+                        </div>
+                    </div>
+                    <div class="coll3">
+                        <div class="labels">labels</div>
+                        <svg class="content-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z"/>
+                            <path d="M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div class="modal-block" id="modalBlock">
+    <div class="global-shadow" id="globalShadow">
+        <div class="modal-cart modal-createN" id="modalCreater">
+            <div class="modal-cart-header">
+                <div class="modal-title">
+                    <p>Создание заметки</p>
+                </div>
+                <div class="modal-header-right">
+                    <div class="modal-cross" id="modalCross">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" xml:space="preserve">
+                            <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="modal-cart-content modal-create">
+                <form action="{% url 'create_note_api' %}" autocomplete="off">
+                    {% csrf_token %}
+                    <label for="fNoteName">
+                        Название:
+                        <input class="modal-input" type="text" id="fNoteName" name="fNoteName" required>
+                        <div class="error">Invalid value.</div>
+                    </label>
+                    <label for="fNoteContent">
+                        Содержание:
+                        <textarea class="modal-input" name="fNoteContent" id="fNoteContent" required rows="3"></textarea>
+                        <div class="error">Invalid value.</div>
+                    </label>
+                    Маркер:<br>
+                    <div class="form-marker">
+                        <label>
+                            <input type="radio" name="marker" checked>
+                            <div class="marker" data-color="none" ></div>
+                        </label>
+                        <label>
+                            <input type="radio" name="marker">
+                            <div class="marker" data-color="green"></div>
+                        </label>
+                        <label>
+                            <input type="radio" name="marker">
+                            <div class="marker" data-color="yellow"></div>
+                        </label>
+                        <label>
+                            <input type="radio" name="marker">
+                            <div class="marker" data-color="red"></div>
+                        </label>
+                    </div>
+                    <button class="submitButton btn-default" type="button">Создать</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal-cart modal-createF" id="modalFCreater">
+            <div class="modal-cart-header">
+                <div class="modal-title">
+                    <p>Создание папки</p>
+                </div>
+                <div class="modal-header-right">
+                    <div class="modal-cross" id="modalCross">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" xml:space="preserve">
+                            <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="modal-cart-content">
+                <form action="{% url 'create_note_api' %}" method="POST" autocomplete="off">
+                    {% csrf_token %}
+                    <label for="fFolderName">
+                        Название папки:
+                        <input class="modal-input" type="text" id="fFolderName" name="fFolderName" required>
+                    </label>
+                    Маркер:<br>
+                    <div class="form-marker">
+                        <label>
+                            <input type="radio" name="marker" checked>
+                            <div class="marker" data-color="none" ></div>
+                        </label>
+                        <label>
+                            <input type="radio" name="marker">
+                            <div class="marker" data-color="green"></div>
+                        </label>
+                        <label>
+                            <input type="radio" name="marker">
+                            <div class="marker" data-color="yellow"></div>
+                        </label>
+                        <label>
+                            <input type="radio" name="marker">
+                            <div class="marker" data-color="red"></div>
+                        </label>
+                    </div>
+                    <button class="submitButton btn-default" type="button">Создать</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal-cart modal-sort" id="modalSorter">
+            <div class="modal-cart-header">
+                <div class="modal-title">
+                    <p>Сортировка</p>
+                </div>
+                <div class="modal-header-right">
+                    <div class="modal-cross" id="modalCross">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" xml:space="preserve">
+                            <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="modal-cart-content">
+                <form class="form-sort" action="">
+                    <label for="sortCustom">
+                        <input type="radio" id="sortCustom" name="sortModal" checked>
+                        Пользовательская
+                    </label>
+                    <label for="sortByCreatedDate">
+                        <input type="radio" id="sortByCreatedDate" name="sortModal">
+                        По дате создания
+                    </label>
+                    <label for="sortByUpdatedDate">
+                        <input type="radio" id="sortByUpdatedDate" name="sortModal">
+                        По дате изменения
+                    </label>
+                    <label for="sortByAlphabet">
+                        <input type="radio" id="sortByAlphabet" name="sortModal">
+                        По алфавиту
+                    </label>
+                    <label for="sortFrieds">
+                        <input type="radio" id="sortFrieds" name="sortModal">
+                        По наличию друзей
+                    </label>
+                    <label for="sortNotice">
+                        <input type="radio" id="sortNotice" name="sortModal">
+                        По наличию напоминаний
+                    </label>
+                    <label for="sortSave">
+                        <input type="checkbox" id="sortSave" name="sortSave">
+                        Cохранить как пользовательскую
+                    </label>
+                    <button class="submitButton btn-default" type="button">Применить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="helpLink" style="position: absolute; right: 0px; bottom: 0px; z-index: 1;">
+    <a href="{% url 'help_url' %}">Help ссылка</a>
+</div>
+
+
+<script> // BUTTONS & MODALS
+
+let modal = null // конкретная активная модалка из множества
+
+function hideModal(event) {
+    if (
+        (event.target != globalShadow) &&
+        // (event.currentTarget != modalCross) &&
+        (event.key != 'Escape')
+    ) return
+    modalBlock.style['display'] = 'none'
+    modal.style['display'] = 'none'
+}
+function hideModalCross(event) {
+    if (event.target.closest('.modal-cross')) {
+        modalBlock.style['display'] = 'none'
+        modal.style['display'] = 'none'
+    }
+}
+// function clearModal() {
+//     // сброс значений в модалке
+//     // - https://sky.pro/wiki/html/sbros-poley-formy-pri-klike-v-j-query-podrobniy-razbor/
+//     modalBlock.style['display'] = 'none'
+//     modal.style['display'] = 'none'
+
+// }
+
+function getModal(event) {
+    // modal = event.target.dataset.modal
+    modal = document.getElementById(event.target.dataset.modal)
+    modal.style['display'] = 'block'
+    console.log('target = ',event.target)
+    console.log('modal = ', event.target.dataset.modal)
+    modalBlock.style['display'] = 'block'
+    // getModal()
+}
+
+modalBlock.addEventListener('click', hideModal)
+modalBlock.addEventListener('click', hideModal)
+document.addEventListener('click', hideModalCross)
+// modalCross.addEventListener('click', hideModal)
+
+modalSortBtn.addEventListener('click', getModal)
+modalCreateBtn.addEventListener('click', getModal)
+modalCreateFBtn.addEventListener('click', getModal)
+
+document.addEventListener('keyup', hideModal)
+
+
+
+function sortContent() {
+    // сортировка
+    // get - modal-window
+    console.log('сортировка - показать модалку')
+}
+function sortContentAlphabet() {
+    // сортировка по алфавиту
+    console.log('сортировка по алфавиту')
+}
+function sortContentDate() {
+    // сортировка по алфавиту
+    console.log('сортировка по дате')
+}
+function sortContentCustom() {
+    // сортировка по алфавиту
+    console.log('сортировка кастомная')
+}
+</script>
+
+<script> // SEARCH BLOCK
+
+    searchListTest = [
+        'О Нас',
+        'Основа',
+        'Блог',
+        'Контакт',
+        'Заказ',
+        'Поддержка',
+        'Инструменты',
+    ]
+    let showSearchList = function (event) {
+        // поиск 
+        if (event.target != searchQueryInput) return // событие вне searc поля (доп. проверка)
+
+        let searchValueUpper = searchQueryInput.value.toUpperCase()
+        if (searchValueUpper == '') { // если поисковое слово удалено
+            searchDropdown.style['display'] = 'none'
+            searchDropdown.innerHTML = ''
+            return
+        }
+
+        searchDropdown.style['display'] = 'block'
+        searchDropdown.innerHTML = ''
+        console.log('Value of #searchQueryInput is ', searchValueUpper)
+        searchListOriginal = searchListTest // получить полный список потенциальных объектов
+        seacrhListFiltered = []
+        for (let i = 0; i < searchListOriginal.length; i++) {
+            if (searchListOriginal[i].toUpperCase().includes(searchValueUpper)) {
+                seacrhListFiltered.push(searchListOriginal[i])
+            }
+        }
+        for (let i = 0; i < seacrhListFiltered.length; i++) {
+            searchElemI = document.createElement('a')
+            searchElemI.href = '#' + seacrhListFiltered[i]
+            searchElemI.innerHTML = seacrhListFiltered[i]
+            searchDropdown.append(searchElemI)
+        }
+    }
+
+    let hideSearchList = function (event) {
+        // удаление выпадающего списка строки поиска
+        if (searchDropdown.style['display'] != 'block') return // выпадающего списка нет
+        if (event.target == searchQueryInput) return // нажатие по поисковой строке
+        searchDropdown.style['display'] = 'none'
+        searchDropdown.innerHTML = ''
+    }
+    searchQueryInput.addEventListener('input', showSearchList)
+    document.addEventListener('click', hideSearchList)
+</script>
+
+<script> // create data
+let noteFolderLst = [
+    {
+        id: 'f1',
+        title: "note-folder 1",
+        labels: "labelsF 1",
+        color: 'yellow'
+    },
+    {
+        id: 'f2',
+        title: "note-folder 2",
+        labels: "labelsF 2",
+        color: 'green'
+    }
+]
+let noteContentLst = [
+    {
+        id: 'n1',
+        title: "note-block 1",
+        labels: "labels 1",
+        color: 'yellow'
+    },
+    {
+        id: 'n2',
+        title: "note-block 2",
+        labels: "labels 2",
+        color: 'red'
+    },
+    {
+        id: 'n3',
+        title: "note-block 3",
+        labels: "labels 3",
+        color: 'green'
+    }
+]
+function viewObjects(folderLst, entities, type) {
+    for (let i=0; i<folderLst.length; i++) {
+        createFolder(
+            folderLst[i].id, folderLst[i].title, 
+            folderLst[i].labels, folderLst[i].color
+        )
+    }
+
+    for (let i=0; i<entities.length; i++) {
+        if (type=="notes") {
+            createNote(
+                id=entities[i].id,
+                title=entities[i].title, 
+                labelsLst=entities[i].labels,
+                color=entities[i].color,
+                objtype='note'
+            )
+        } else if (type=="notices") {
+            createNotice(
+                id=entities[i].id,
+                title=entities[i].title, 
+                labelsLst=entities[i].labels,
+                color=entities[i].color,
+                objtype='notices',
+                datetime=entities[i].datetime
+            )
+        } else alert('viewObjects wrong!')
+    }
+}
+function createNote(id, title, labelsLst, color, objtype, datetime) {
+    let noteBlock = document.createElement("div")
+    let blockRow = document.createElement("div")
+    let coll1 = document.createElement("div")
+        let marker = document.createElement("div")
+        // svg
+    let coll2 = document.createElement("div")
+        if (objtype==='noties') {
+            let datetime = document.createElement("div")
+            let datetimeP = document.createElement("div")
+            let space = document.createElement("span")
+        }
+        let titleBlock = document.createElement("div")
+            let titleP = document.createElement("p")
+    let coll3 = document.createElement("div")
+        let labels = document.createElement("div")
+        // svg
+
+    noteBlock.className = "dd-object"
+    noteBlock.id = id
+    blockRow.className = 'block-row'
+    coll1.className = 'coll1'
+    coll2.className = 'coll2'
+    coll3.className = 'coll3'
+    marker.className = 'marker'
+    marker.dataset['color'] = color
+    if (objtype==='noties') {
+        datetime.className = 'datetime'
+        datetimeP.textContent = datetime
+        space.textContent = ' — '
+    }
+    titleBlock.className = 'title'
+    titleP.textContent = title
+    labels.className = 'labels'
+    labels.textContent = 'labels'
+
+    objectsList.append(noteBlock)
+    noteBlock.append(blockRow)
+    blockRow.append(coll1, coll2, coll3)
+    coll1.append(marker)
+    if (objtype==='noties') {
+        coll2.append(datetime)
+        datetime.append(datetimeP)
+        coll2.append(space)
+    }
+    coll2.append(titleBlock)
+    titleBlock.append(titleP)
+    coll3.append(labels)
+
+    createSVG(  // type
+        parent=coll1,
+        className='content-svg',
+        viewBox='2 0 20 24',
+        pathLst=[
+            'm7 12h10v2h-10zm0 6h7v-2h-7zm15-10.414v16.414h-20v-21a3 3 0 0 1 3-3h9.414zm-7-.586h3.586l-3.586-3.586zm5 15v-13h-7v-7h-8a1 1 0 0 0 -1 1v19z',
+        ]
+     )
+    createSVG(  // settings
+        parent=coll3,
+        className='content-svg',
+        viewBox='0 0 24 24',
+        pathLst=[
+            'M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z',
+            'M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z'
+        ]
+     )
+}
+function createNotice(id, title, labels, color, datetime) {
+    console.log("createNotice")
+}
+function createFolder(id, title, labels, color) {
+    console.log("createFolder")
+}
+function createSVG(parent, className, viewBox, pathLst) {
+    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+    svg.setAttributeNS(null, 'class', className)
+    svg.setAttributeNS(null, 'viewBox', viewBox)
+    for (let i=0; i < pathLst.length; i++) {
+        let svgPath = document.createElementNS("http://www.w3.org/2000/svg", 'path')
+        svgPath.setAttributeNS(null, 'd', pathLst[i])
+        svg.appendChild(svgPath)
+    }
+    parent.append(svg)
+    // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js
+}
+viewObjects(noteFolderLst, noteContentLst, "notes")
+</script>
+
+<script src="{% static 'js/dd.js' %}"></script>
+
+{% endblock content %}

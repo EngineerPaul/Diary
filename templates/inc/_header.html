@@ -1,0 +1,124 @@
+<style>
+
+</style>
+
+<div class="header">
+    <div class="header-row">
+        <div class="header-fields" id="sections">
+            <a class="header-field" id="notes" href="{% url 'notes_url' %}">
+                <div class="header-field-title">
+                    Заметки
+                </div>
+            </a>
+            <a class="header-field" id="notices" href="{% url 'notices_url' %}">
+                <div class="header-field-title">
+                    Напоминания
+                </div>
+            </a>
+            <!-- <div class="header-field" id="archive">
+                <div class="header-field-title">
+                    Архив
+                </div>
+                
+            </div>
+            <div class="header-field" id="united">
+                <div class="header-field-title">
+                    Совместные заметки
+                </div>
+            </div> -->
+        </div>
+        <div class="header-settings">
+            <a href="{% url 'settings_url' %}">Настройки</a>
+        </div>
+    </div>
+    <hr>
+</div>
+
+<!-- <script>
+77 скрипт для отключения перехода страниц между titles
+// let allSections = [notes, notices, archive, united]
+let allSections = [notes, notices]
+let path = window.location.pathname
+let activeSection
+let previosSection
+
+let getOrSetSession = function(key, value) {
+    key = encodeURIComponent(key)
+    value = encodeURIComponent(value)
+    if (value!='undefined') {
+        sessionStorage.setItem(key, value)
+    } else {
+        val = decodeURIComponent(sessionStorage.getItem(key))
+        // console.log('key=', key, ' val=', val)
+        val = val=='null' ? null : val
+        return val
+    }
+}
+
+if (getOrSetSession('activeSection') == null) {
+    if (path == '/') {
+        activeSection = notes
+    } else {
+        activeSection = null
+    }
+} else {
+    activeSection = document.getElementById(getOrSetSession('activeSection'))
+}
+
+if (getOrSetSession('previosSection') == null) {
+    previosSection = null
+} else {
+    previosSection = document.getElementById(getOrSetSession('previosSection'))
+}
+
+
+let updateSections = function() {
+    if (activeSection != null) {
+        activeSection.classList.add('field-open')
+    }
+    if (previosSection != null) {
+        previosSection.classList.remove('field-open')
+    }
+}
+
+let openActiveSectionContent = function() {
+    // здесь будет обновляться html контента
+}
+
+let openSection = function(event) {
+    
+    let targetField = event.target.closest('.header-field')
+    if (targetField == null) {return}
+    if (targetField == activeSection) {return}
+
+    previosSection = activeSection 
+    if (previosSection != null) {
+        getOrSetSession('previosSection', previosSection.id)
+    } else {
+        getOrSetSession('previosSection', null)
+    }
+    getOrSetSession('previosSection', previosSection)
+    if (path != '/') {
+        getOrSetSession('activeSection', targetField.id)
+        window.location = '/'
+        return
+    } 
+    activeSection = targetField
+    getOrSetSession('activeSection', activeSection.id)
+
+    updateSections()
+    openActiveSectionContent()
+}
+
+if (path == '/') {
+    // activeSection = notes
+    updateSections()
+    openActiveSectionContent()
+}
+if (path != '/') {
+    activeSection = null
+    getOrSetSession('activeSection', null)
+    updateSections()
+}
+sections.addEventListener('click', openSection)
+</script> -->
