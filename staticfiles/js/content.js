@@ -171,9 +171,15 @@ let Content = {
         this.noties = notiesList
         return notiesList
     },
-    viewObjects: function(type) {
+    viewObjects: function() {
+        let type = ContentSettings.section
         let folderLst = this.folders
         let entities = this[type]
+
+        if (entities === null) { // delete when notices works 
+            console.log('notices doest work')
+            return
+        }
 
         for (let i=0; i<folderLst.length; i++) {
             this.createFolder(
@@ -308,10 +314,21 @@ let Header = {
         if (!sec) return
         section = event.target.closest('.header-field').id
         sessionStorage.setItem('section', section)
+        ContentSettings.section = section
+        this.toggleHeaderField()
         Content.removeObjects()
         Content.viewObjects(section)
     },
+    toggleHeaderField: function() {
+        let section = document.getElementById(ContentSettings.section)
+        let sectionSecond = ContentSettings.section==='notes'?
+                            document.getElementById('notices'):
+                            document.getElementById('notes')
+        section.classList.add('selected')
+        sectionSecond.classList.remove('selected')
+    },
     run: function() {
+        this.toggleHeaderField()
         this.sections.addEventListener('click', this.headerClick.bind(this))
     }
 }

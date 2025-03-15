@@ -124,23 +124,31 @@ sections.addEventListener('click', openSection)
 </script> -->
 
 <script> // header preventDefault
-    const HeaderSettings = {
-        'contentURL': 'notes'
-    }
+    let header = {
+        contentURL: 'notes',
+        sections: document.getElementById('sections'),
 
-    function goToURL(event) {
-        // переходит на страницу контента с сохранением типа контента
-        if (window.location.pathname == '/'+HeaderSettings.contentURL) {
+        goToURL: function(event) {
+            // переходит на страницу контента с сохранением типа контента
+            if (window.location.pathname == '/'+this.contentURL) {
+                event.preventDefault()
+                // console.log('Header preventDefault')
+                return
+            }
+            let sec = event.target.closest('.header-field')
+            if (!sec) return
+            let section = event.target.closest('.header-field').id
+            sessionStorage.setItem('section', section)
             event.preventDefault()
-            // console.log('Header preventDefault')
-            return
-        }
-        let sec = event.target.closest('.header-field')
-        if (!sec) return
-        section = event.target.closest('.header-field').id
-        sessionStorage.setItem('section', section)
-    }
+            window.location.pathname = '/'+this.contentURL
 
-    sections = document.getElementById('sections')
-    sections.addEventListener('click', goToURL)
+
+        },
+        run: function() {
+            // sections = document.getElementById('sections')
+            this.sections.addEventListener('click', this.goToURL.bind(this))
+        }
+    }
+    header.run()
+
 </script>
