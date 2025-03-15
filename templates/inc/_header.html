@@ -122,3 +122,25 @@ if (path != '/') {
 }
 sections.addEventListener('click', openSection)
 </script> -->
+
+<script> // header preventDefault
+    const HeaderSettings = {
+        'contentURL': 'notes'
+    }
+
+    function goToURL(event) {
+        // переходит на страницу контента с сохранением типа контента
+        if (window.location.pathname == '/'+HeaderSettings.contentURL) {
+            event.preventDefault()
+            // console.log('Header preventDefault')
+            return
+        }
+        let sec = event.target.closest('.header-field')
+        if (!sec) return
+        section = event.target.closest('.header-field').id
+        sessionStorage.setItem('section', section)
+    }
+
+    sections = document.getElementById('sections')
+    sections.addEventListener('click', goToURL)
+</script>
