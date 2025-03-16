@@ -2,6 +2,13 @@ let ContentSettings = {
     section: sessionStorage.getItem('section')?
              sessionStorage.getItem('section'):
              'notes',
+    urls: {
+        getNotes: 'drf/get-content/getNotes',
+        getNoteFolders: 'drf/get-content/getNoteFolders',
+        getNotices: 'drf/get-content/getNotices',
+        getNoticeFolders: 'drf/get-content/getNoticeFolders',
+    },
+    token: '',  // authorization
     
 }
 
@@ -116,7 +123,7 @@ let search = {
 }
 search.run()
 
-let Content = {
+let contentTest = {
     type: null, // notes or notices
     folders: null,
     notes: null,
@@ -304,7 +311,7 @@ let Content = {
         this.viewObjects(ContentSettings.section)
     }
 }
-Content.run()
+contentTest.run()
 
 let Header = {
     sections: document.getElementById('sections'),
@@ -318,8 +325,8 @@ let Header = {
         ContentSettings.section = section
 
         this.toggleHeaderField()
-        Content.removeObjects()
-        Content.viewObjects(section)
+        contentTest.removeObjects()
+        contentTest.viewObjects(section)
     },
     toggleHeaderField: function() {
         let section = document.getElementById(ContentSettings.section)
@@ -336,3 +343,181 @@ let Header = {
 }
 Header.run()
 
+
+let content = {
+    notes: null,  // dict of notes
+    noteFolders: null,  // dict of note folders
+    notices: null,  // dict of notices
+    noticeFolders: null,  // dict of notice folders
+
+    Note: function(record_id, note_name, order_id, color, parent_id) {
+        // create note object using new notation
+        this.record_id = record_id  // name like notice
+        this.title = note_name
+        this.order_id = order_id
+        this.color = color
+        this.parent_id = parent_id  // folder id
+    },
+    Notice: function(record_id, notice_name, order_id, color, parent_id, date) {
+        // create notice object using new notation
+        this.record_id = record_id  // name like note
+        this.title = notice_name
+        this.order_id = order_id
+        this.color = color
+        this.parent_id = parent_id  // folder id
+        this.date = date
+    },
+    Folder: function(folder_id, folder_name, order_id, color, parent_id) {
+        // create folder object using new notation
+        this.folder_id = folder_id
+        this.title = folder_name
+        this.order_id = order_id
+        this.color = color
+        this.parent_id = parent_id
+    },
+
+    getContentAJAX: function(url, token) { // заглушка
+        // getting list like content from the server by url
+
+        // сейчас работает заглушка. В зависимости от url вовращается разный контент
+        let notes = [  // заглушка
+            [7, 'record 1', 1, null, 7],
+            [11, 'record 1.1', 1, 'red', 9],
+            [24, 'record 1.1.1', 1, 'yellow', 8],
+            [34, 'record 1.2.1', 1, 'green', 21],
+            [29, 'record 1.3.1', 1, null, 22],
+            [17, 'record 2.1', 1, null, 10],
+            [32, 'record 3.1', 1, 'red', 16],
+            [55, 'record 3.1.1', 1, 'green', 17],
+            [56, 'record 4.1.1', 1, 'yellow', 27],
+
+            [9, 'record 2', 2, null, 7],
+            [13, 'record 1.2', 2, 'yellow', 9],
+            [27, 'record 1.1.2', 2, 'red', 8],
+            [41, 'record 1.2.2', 2, null, 21],
+            [18, 'record 2.2', 2, null, 10],
+            [53, 'record 3.1.2', 2, 'green', 17],
+            [61, 'record 4.1.2', 2, 'red', 27],
+
+            [5, 'record 3', 3, null, 7],
+            [4, 'record 4', 4, 'yellow', 7],
+            [12, 'record 5', 5, 'red', 7],
+            [14, 'record 6', 6, null, 7],
+            [26, 'record 7', 7, null, 7],
+            [32, 'record 8', 8, 'green', 7],
+            [19, 'record 9', 9, 'green', 7],
+            [47, 'record 10', 10, null, 7],
+        ]
+        let noteFolders = [
+            [7, 'root', 1, null, 0],
+            [8, 'папка 1.1', 1, null, 9],
+            [9, 'папка 1', 1, null, 7],
+            [17, 'папка 3.1', 1, null, 16],
+            [23, 'папка 1.1.1', 1, null, 8],
+            [27, 'папка 4.1', 1, null, 14],
+            [34, 'папка 3.1.1', 1, null, 17],
+            [36, 'папка 3.1.1.1', 1, null, 34],
+            [10, 'папка 2', 2, 'red', 7],
+            [21, 'папка 1.2', 2, 'yellow', 9],
+            [16, 'папка 3', 3, 'green', 7],
+            [22, 'папка 1.3', 3, null, 9],
+            [14, 'папка 4', 4, 'yellow', 7],
+        ]
+        let notices = []
+        let noticeFolders = []
+        
+        let lst = null
+        if (url==ContentSettings.urls.getNotes) {
+            lst = notes
+        } else if (url==ContentSettings.urls.getNoteFolders) {
+            lst = noteFolders
+        } else if (url==ContentSettings.urls.getNotices) {
+            lst = notices
+        } else if (url==ContentSettings.urls.getNoticeFolders) {
+            lst = noticeFolders
+        } else {
+            console.log('Content Error: Url doesn exists!')
+            return
+        }
+        return lst
+    },
+    getListOfObjects: function(url, objClass) {
+        let listOfLists = this.getContentAJAX(url, ContentSettings.token)
+        let listOfObjects = []
+        for (let i=0;i<listOfLists.length;i++) {
+            listOfObjects.push(new objClass(...listOfLists[i]))
+        }
+        return listOfObjects
+    },
+    getDictOfRecords: function(listOfRecords) {
+        // getting dictionary of records by record_id
+        let record_dict = {}
+        for (let record_i=0; record_i < listOfRecords.length; record_i++) {
+            record_dict[listOfRecords[record_i].record_id] = listOfRecords[record_i]
+        }
+        return record_dict
+    },
+    getDictOfFolders: function(listOfFolders) {
+        // Getting dictionary of folders by folder_id. Has the following form:
+        // folder_dict = {
+        //     folder_id:{
+        //         folders:[...], - IDs of folders inside the folder with folder_id
+        //         records:[...], - IDs of records inside the folder with folder_id
+        //         info - information about the folder with folder_id
+        //     }, 
+        //     ...
+        // }
+        let folderDict = {}
+        for (let folder_i=0; folder_i < listOfFolders.length; folder_i++) {
+            folderDict[listOfFolders[folder_i].folder_id] = {
+                folders: [],
+                records: [],
+                info: listOfFolders[folder_i]
+            }
+        }
+        for (let folder_i=0; folder_i < listOfFolders.length; folder_i++) {
+            if (listOfFolders[folder_i].parent_id==0) continue
+            folderDict[listOfFolders[folder_i].parent_id].folders.push(listOfFolders[folder_i].folder_id)
+        }
+        return folderDict
+    },
+    fillOutFolderDict: function(folderDict, recordList) {
+        // fill out record id in folders
+        for (let record_i=0; record_i < recordList.length; record_i++) {
+            folderDict[recordList[record_i].parent_id].records.push(recordList[record_i].record_id)
+        }
+        return folderDict
+    },
+    getContent: function() {
+
+        let notesList = this.getListOfObjects(ContentSettings.urls.getNotes, this.Note)
+        let noteFoldersList = this.getListOfObjects(ContentSettings.urls.getNoteFolders, this.Folder)
+        let notesDict = this.getDictOfRecords(notesList)
+        let noteFoldersDict = this.getDictOfFolders(noteFoldersList)
+        let noteFoldersDictFilled = this.fillOutFolderDict(noteFoldersDict, notesList)
+
+        let noticesList = this.getListOfObjects(ContentSettings.urls.getNotes, this.Note)
+        let noticeFoldersList = this.getListOfObjects(ContentSettings.urls.getNoteFolders, this.Folder)
+        let noticesDict = this.getDictOfRecords(noticesList)
+        let noticeFoldersDict = this.getDictOfFolders(noticeFoldersList)
+        let noticeFoldersDictFilled = this.fillOutFolderDict(noticeFoldersDict, noticesList)
+        
+        this.notes = notesDict
+        this.noteFolders = noteFoldersDictFilled
+        this.notices = noticesDict
+        this.noticeFolders = noticeFoldersDictFilled
+    },
+
+    run: function() {
+        this.getContent()
+    }
+}
+content.run()
+
+let viewContent = {
+    
+}
+
+let DragAndDrop = {
+    
+}
