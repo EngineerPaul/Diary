@@ -6,6 +6,8 @@
     --header-color: #a8f8dd;
     --obj-color: #abece6;
     --border-color: rgba(1, 104, 172, 0.836);
+    --link-color: #0083ee;
+    --link-color-hover: #fc3e3e;
 }
 
 
@@ -192,6 +194,20 @@ body {
         }
         }
     .content-window {
+        .folder-path {
+            display: inline-block;
+            margin-bottom: 6px;
+
+            .path-folder {
+                display: inline;
+                text-decoration: underline;
+                color: var(--link-color);
+            }
+            .path-folder:hover {
+                color: var(--link-color-hover);
+                cursor: pointer;
+            }
+        }
         .dd-object {
             min-height: 50px;
             margin-bottom: 10px;

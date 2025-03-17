@@ -515,9 +515,76 @@ let content = {
 content.run()
 
 let viewContent = {
+    currenttype: 'notes',
+    currentFolder: null,
     
 }
 
 let DragAndDrop = {
     
 }
+
+let path = {
+    pathList: [], // список объектов с именем и id
+
+    getPathList: function() {
+        // по viewContent.currentFolder должен рекурсивно создаваться список this.pathList
+        this.pathList = [ // заглушка
+            {name: "Папка 1", id: 7},
+            {name: "Папка 2", id: 8},
+            {name: "Папка 3", id: 11},
+            {name: "Папка 4", id: 5},
+            // {name: "Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 ", id: 12},
+        ]
+    },
+    viewPath: function() {
+        let path = document.getElementById('path')
+        path.innerHTML = ''
+
+        let rootPath = document.createElement('div')
+        rootPath.className = 'path-folder'
+        rootPath.id = 'rootPath'
+        if (viewContent.currenttype == 'notes') {
+            rootPath.textContent = 'Заметки'
+        } else if (viewContent.currenttype == 'notices') {
+            rootPath.textContent = 'Напоминания'
+        } else {
+            rootPath.textContent = 'Error'
+            return
+        }
+        path.append(rootPath)
+
+        for (let i=0; i<this.pathList.length; i++) {
+            let delimiter = document.createElement('span')
+            delimiter.className = 'path-delimiter'
+            delimiter.textContent = ' / '
+            path.append(delimiter)
+
+            let pathFolder = document.createElement('div')
+            pathFolder.className = 'path-folder'
+            pathFolder.textContent = this.pathList[i].name
+            path.append(pathFolder)
+        }
+        
+    },
+    getPath: function(event) {
+        // перейти по новому пути по клику
+        if (event.target.className != 'path-folder') return
+        let newFolderId = null
+        for (let i=0; i<this.pathList.length; i++) {
+            if (this.pathList[i].name === event.target.textContent) {
+                newFolderId = this.pathList[i].id
+            }
+        }
+        console.log('id = ', newFolderId)
+        this.getPathList()  // получить новый путь при помощи id папки newFolderId
+        // отобразить новый контент при помощи viewContent
+    },
+    run: function() {
+        this.getPathList()
+        this.viewPath()
+        let path = document.getElementById('path')
+        path.addEventListener('click', this.getPath.bind(this))
+    }
+}
+path.run()
