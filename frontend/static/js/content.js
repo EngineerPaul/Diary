@@ -308,7 +308,7 @@ let contentTest = {
         this.getNotes()
         this.getFolderList()
         this.getNoties()
-        this.viewObjects(ContentSettings.section)
+        // this.viewObjects(ContentSettings.section)
     }
 }
 contentTest.run()
@@ -325,8 +325,8 @@ let Header = {
         ContentSettings.section = section
 
         this.toggleHeaderField()
-        contentTest.removeObjects()
-        contentTest.viewObjects(section)
+        viewContent.removeObjects()
+        viewContent.displayItems()
     },
     toggleHeaderField: function() {
         let section = document.getElementById(ContentSettings.section)
@@ -349,6 +349,8 @@ let content = {
     noteFolders: null,  // dict of note folders
     notices: null,  // dict of notices
     noticeFolders: null,  // dict of notice folders
+    notesRoot: null,  // root folder id
+    noticesRoot: null,  // root folder id
 
     Note: function(record_id, note_name, order_id, color, parent_id) {
         // create note object using new notation
@@ -358,7 +360,7 @@ let content = {
         this.color = color
         this.parent_id = parent_id  // folder id
     },
-    Notice: function(record_id, notice_name, order_id, color, parent_id, date) {
+    Notice: function(record_id, notice_name, order_id, color, parent_id, date, time) {
         // create notice object using new notation
         this.record_id = record_id  // name like note
         this.title = notice_name
@@ -366,6 +368,7 @@ let content = {
         this.color = color
         this.parent_id = parent_id  // folder id
         this.date = date
+        this.time = time
     },
     Folder: function(folder_id, folder_name, order_id, color, parent_id) {
         // create folder object using new notation
@@ -423,8 +426,49 @@ let content = {
             [22, 'папка 1.3', 3, null, 9],
             [14, 'папка 4', 4, 'yellow', 7],
         ]
-        let notices = []
-        let noticeFolders = []
+        let notices = [
+            [7, 'notice 1', 1, null, 7, '15.05.2025', '12:00'],
+            [11, 'notice 1.1', 1, 'red', 9, '15.05.2025', '12:00'],
+            [24, 'notice 1.1.1', 1, 'yellow', 8, '15.05.2025', '12:00'],
+            [34, 'notice 1.2.1', 1, 'green', 21, '15.05.2025', '12:00'],
+            [29, 'notice 1.3.1', 1, null, 22, '15.05.2025', '12:00'],
+            [17, 'notice 2.1', 1, null, 10, '15.05.2025', '12:00'],
+            [32, 'notice 3.1', 1, 'red', 16, '15.05.2025', '12:00'],
+            [55, 'notice 3.1.1', 1, 'green', 17, '15.05.2025', '12:00'],
+            [56, 'notice 4.1.1', 1, 'yellow', 27, '15.05.2025', '12:00'],
+
+            [9, 'notice 2', 2, null, 7, '15.05.2025', '12:00'],
+            [13, 'notice 1.2', 2, 'yellow', 9, '15.05.2025', '12:00'],
+            [27, 'notice 1.1.2', 2, 'red', 8, '15.05.2025', '12:00'],
+            [41, 'notice 1.2.2', 2, null, 21, '15.05.2025', '12:00'],
+            [18, 'notice 2.2', 2, null, 10, '15.05.2025', '12:00'],
+            [53, 'notice 3.1.2', 2, 'green', 17, '15.05.2025', '12:00'],
+            [61, 'notice 4.1.2', 2, 'red', 27, '15.05.2025', '12:00'],
+
+            [5, 'notice 3', 3, null, 7, '15.05.2025', '12:00'],
+            [4, 'notice 4', 4, 'yellow', 7, '15.05.2025', '12:00'],
+            [12, 'notice 5', 5, 'red', 7, '15.05.2025', '12:00'],
+            [14, 'notice 6', 6, null, 7, '15.05.2025', '12:00'],
+            [26, 'notice 7', 7, null, 7, '15.05.2025', '12:00'],
+            [32, 'notice 8', 8, 'green', 7, '15.05.2025', '12:00'],
+            [19, 'notice 9', 9, 'green', 7, '15.05.2025', '12:00'],
+            [47, 'notice 10', 10, null, 7, '15.05.2025', '12:00'],
+        ]
+        let noticeFolders = [
+            [7, 'root', 1, null, 0],
+            [8, 'папка 1.1', 1, null, 9],
+            [9, 'папка 1 notice', 1, null, 7],
+            [17, 'папка 3.1', 1, null, 16],
+            [23, 'папка 1.1.1', 1, null, 8],
+            [27, 'папка 4.1', 1, null, 14],
+            [34, 'папка 3.1.1', 1, null, 17],
+            [36, 'папка 3.1.1.1', 1, null, 34],
+            [10, 'папка 2', 2, 'red', 7],
+            [21, 'папка 1.2', 2, 'yellow', 9],
+            [16, 'папка 3', 3, 'green', 7],
+            [22, 'папка 1.3', 3, null, 9],
+            [14, 'папка 4', 4, 'yellow', 7],
+        ]
         
         let lst = null
         if (url==ContentSettings.urls.getNotes) {
@@ -436,7 +480,7 @@ let content = {
         } else if (url==ContentSettings.urls.getNoticeFolders) {
             lst = noticeFolders
         } else {
-            console.log('Content Error: Url doesn exists!')
+            console.log('Content Error: Url doesnt exists!')
             return
         }
         return lst
@@ -496,8 +540,8 @@ let content = {
         let noteFoldersDict = this.getDictOfFolders(noteFoldersList)
         let noteFoldersDictFilled = this.fillOutFolderDict(noteFoldersDict, notesList)
 
-        let noticesList = this.getListOfObjects(ContentSettings.urls.getNotes, this.Note)
-        let noticeFoldersList = this.getListOfObjects(ContentSettings.urls.getNoteFolders, this.Folder)
+        let noticesList = this.getListOfObjects(ContentSettings.urls.getNotices, this.Notice)
+        let noticeFoldersList = this.getListOfObjects(ContentSettings.urls.getNoticeFolders, this.Folder)
         let noticesDict = this.getDictOfRecords(noticesList)
         let noticeFoldersDict = this.getDictOfFolders(noticeFoldersList)
         let noticeFoldersDictFilled = this.fillOutFolderDict(noticeFoldersDict, noticesList)
@@ -506,19 +550,168 @@ let content = {
         this.noteFolders = noteFoldersDictFilled
         this.notices = noticesDict
         this.noticeFolders = noticeFoldersDictFilled
-    },
 
+        this.notesRoot = noteFoldersList[0].folder_id
+        this.noticesRoot = noticeFoldersList[0].folder_id
+    },
     run: function() {
         this.getContent()
+        
     }
 }
 content.run()
 
 let viewContent = {
-    currenttype: 'notes',
-    currentFolder: null,
+    currentType: null,
+    currentFolderId: null,
     
+    displayItems: function() {
+        // отображение должно подождать завершения ajax запроса контента!!!!!!!
+
+        // let type = ContentSettings.section
+        // let foldersDict, recordsDict
+        let foldersList, recordsList
+        if (ContentSettings.section === 'notes') {
+            foldersDict = content.noteFolders
+            recordsDict = content.notes
+            foldersIdList = content.noteFolders[this.currentFolderId].folders
+            recordsIdList = content.noteFolders[this.currentFolderId].records
+        } else if (ContentSettings.section === 'notices') {
+            foldersDict = content.noticeFolders
+            recordsDict = content.notices
+            foldersIdList = content.noticeFolders[this.currentFolderId].folders
+            recordsIdList = content.noticeFolders[this.currentFolderId].records
+            // console.log
+        } else {
+            console.log('viewContent Error: records type doesnt exist')
+        }
+        let objectsList = document.getElementById('objectsList')
+
+        // отображение папки "вернуться", если мы не в корне
+
+        for (let i=0; i<foldersIdList.length; i++) {
+            // this.createFolder(
+            //     id=foldersDict[foldersIdList[i]].info.folder_id,
+            //     title=foldersDict[foldersIdList[i]].info.title,
+            //     labels=null,
+            //     color=foldersDict[foldersIdList[i]].info.color,
+            // )
+            this.createRecord(
+                id=foldersDict[foldersIdList[i]].info.folder_id,
+                title=foldersDict[foldersIdList[i]].info.title,
+                labels=null,
+                color=foldersDict[foldersIdList[i]].info.color,
+            )
+        }
+        for (let i=0; i<recordsIdList.length; i++) {
+            this.createRecord(
+                id=recordsDict[recordsIdList[i]].record_id,
+                title=recordsDict[recordsIdList[i]].title,
+                labelsList=null,
+                color=recordsDict[recordsIdList[i]].color,
+                objtype=ContentSettings.section,
+                datetime=recordsDict[recordsIdList[i]].date+' '+recordsDict[recordsIdList[i]].time
+            )
+        }
+
+    },
+    createRecord: function(id, title, labelsList, color, objtype, datetime) {
+        let noteBlock = document.createElement("div")
+        let blockRow = document.createElement("div")
+        let coll1 = document.createElement("div")
+            let marker = document.createElement("div")
+            // svg
+        let coll2 = document.createElement("div")
+            if (objtype==='noties') {
+                let datetime = document.createElement("div")
+                let datetimeP = document.createElement("div")
+                let space = document.createElement("span")
+            }
+            let titleBlock = document.createElement("div")
+                let titleP = document.createElement("p")
+        let coll3 = document.createElement("div")
+            let labels = document.createElement("div")
+            // svg
+
+        // noteBlock.className = "dd-object"
+        noteBlock.classList.add('dd-object')
+        // noteBlock.classList.add('sflsjfbkls') - указать класс объекта для D&D
+        noteBlock.id = id
+        blockRow.className = 'block-row'
+        coll1.className = 'coll1'
+        coll2.className = 'coll2'
+        coll3.className = 'coll3'
+        marker.className = 'marker'
+        marker.dataset['color'] = color
+        if (objtype==='noties') {
+            datetime.className = 'datetime'
+            datetimeP.textContent = datetime
+            space.textContent = ' — '
+        }
+        titleBlock.className = 'title'
+        titleP.textContent = title
+        labels.className = 'labels'
+        labels.textContent = 'labels'
+
+        objectsList.append(noteBlock)
+        noteBlock.append(blockRow)
+        blockRow.append(coll1, coll2, coll3)
+        coll1.append(marker)
+        if (objtype==='noties') {
+            coll2.append(datetime)
+            datetime.append(datetimeP)
+            coll2.append(space)
+        }
+        coll2.append(titleBlock)
+        titleBlock.append(titleP)
+        coll3.append(labels)
+
+        this.createSVG(  // type
+            parent=coll1,
+            className='content-svg',
+            viewBox='2 0 20 24',
+            pathLst=[
+                'm7 12h10v2h-10zm0 6h7v-2h-7zm15-10.414v16.414h-20v-21a3 3 0 0 1 3-3h9.414zm-7-.586h3.586l-3.586-3.586zm5 15v-13h-7v-7h-8a1 1 0 0 0 -1 1v19z',
+            ]
+        )
+        this.createSVG(  // settings
+            parent=coll3,
+            className='content-svg',
+            viewBox='0 0 24 24',
+            pathLst=[
+                'M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z',
+                'M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z'
+            ]
+        )
+    },
+    // createNotice: function(id, title, labels, color, datetime) {
+    //     console.log("createNotice")
+    // },
+    createFolder: function(id, title, labels, color) {
+        console.log("createFolder, id=", id)
+    },
+    createSVG: function(parent, className, viewBox, pathLst) {
+        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        svg.setAttributeNS(null, 'class', className)
+        svg.setAttributeNS(null, 'viewBox', viewBox)
+        for (let i=0; i < pathLst.length; i++) {
+            let svgPath = document.createElementNS("http://www.w3.org/2000/svg", 'path')
+            svgPath.setAttributeNS(null, 'd', pathLst[i])
+            svg.appendChild(svgPath)
+        }
+        parent.append(svg)
+        // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js    
+    },
+    removeObjects: function() {
+        let objectsList = document.getElementById('objectsList')
+        objectsList.innerHTML = ''
+    },
+    run: function() {
+        this.currentFolderId = content.notesRoot
+        this.displayItems() // отображение должно подождать завершения ajax запроса контента!!!!!!!
+    }
 }
+viewContent.run()
 
 let DragAndDrop = {
     
@@ -528,7 +721,7 @@ let path = {
     pathList: [], // список объектов с именем и id
 
     getPathList: function() {
-        // по viewContent.currentFolder должен рекурсивно создаваться список this.pathList
+        // по viewContent.currentFolderId должен рекурсивно создаваться список this.pathList
         this.pathList = [ // заглушка
             {name: "Папка 1", id: 7},
             {name: "Папка 2", id: 8},
@@ -544,9 +737,9 @@ let path = {
         let rootPath = document.createElement('div')
         rootPath.className = 'path-folder'
         rootPath.id = 'rootPath'
-        if (viewContent.currenttype == 'notes') {
+        if (ContentSettings.section == 'notes') {
             rootPath.textContent = 'Заметки'
-        } else if (viewContent.currenttype == 'notices') {
+        } else if (ContentSettings.section == 'notices') {
             rootPath.textContent = 'Напоминания'
         } else {
             rootPath.textContent = 'Error'
