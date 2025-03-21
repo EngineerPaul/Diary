@@ -11,6 +11,13 @@ let ContentSettings = {
     token: '',  // authorization
     
 }
+let DADSettings = {
+    objClasses: {
+        folder: 'folder',
+        record: 'record',
+        allDraggable: 'draggableObject'
+    }
+}
 
 let modals = {
     modal: null,
@@ -596,37 +603,44 @@ let viewContent = {
             //     labels=null,
             //     color=foldersDict[foldersIdList[i]].info.color,
             // )
-            this.createRecord(
+            this.createObject(
                 id=foldersDict[foldersIdList[i]].info.folder_id,
                 title=foldersDict[foldersIdList[i]].info.title,
                 labels=null,
                 color=foldersDict[foldersIdList[i]].info.color,
+                objtype='folder',
             )
         }
         for (let i=0; i<recordsIdList.length; i++) {
-            this.createRecord(
+            this.createObject(
                 id=recordsDict[recordsIdList[i]].record_id,
                 title=recordsDict[recordsIdList[i]].title,
                 labelsList=null,
                 color=recordsDict[recordsIdList[i]].color,
-                objtype=ContentSettings.section,
+                objtype='record',
                 datetime=recordsDict[recordsIdList[i]].date+' '+recordsDict[recordsIdList[i]].time
             )
         }
 
     },
-    createRecord: function(id, title, labelsList, color, objtype, datetime) {
+    createObject: function(id, title, labelsList, color, objtype, datetime) {
+
+        let isNotices = ContentSettings.section==='notices'
+        let isRecord = objtype==='record'
+
         let noteBlock = document.createElement("div")
         let blockRow = document.createElement("div")
         let coll1 = document.createElement("div")
             let marker = document.createElement("div")
             // svg
         let coll2 = document.createElement("div")
-            if (objtype==='noties') {
-                let datetime = document.createElement("div")
-                let datetimeP = document.createElement("div")
-                let space = document.createElement("span")
+            let datetimeObj, datetimeP, space
+            if (isNotices&&isRecord) {
+                datetimeObj = document.createElement("div")
+                datetimeP = document.createElement("div")
+                space = document.createElement("span")
             }
+            
             let titleBlock = document.createElement("div")
                 let titleP = document.createElement("p")
         let coll3 = document.createElement("div")
@@ -635,7 +649,12 @@ let viewContent = {
 
         // noteBlock.className = "dd-object"
         noteBlock.classList.add('dd-object')
-        // noteBlock.classList.add('sflsjfbkls') - указать класс объекта для D&D
+        noteBlock.classList.add('draggableObject')
+        if (isRecord) {
+            noteBlock.classList.add('record')
+        } else {
+            noteBlock.classList.add('folder')
+        }
         noteBlock.id = id
         blockRow.className = 'block-row'
         coll1.className = 'coll1'
@@ -643,8 +662,8 @@ let viewContent = {
         coll3.className = 'coll3'
         marker.className = 'marker'
         marker.dataset['color'] = color
-        if (objtype==='noties') {
-            datetime.className = 'datetime'
+        if (isNotices&&isRecord) {
+            datetimeObj.className = 'datetime'
             datetimeP.textContent = datetime
             space.textContent = ' — '
         }
@@ -657,9 +676,9 @@ let viewContent = {
         noteBlock.append(blockRow)
         blockRow.append(coll1, coll2, coll3)
         coll1.append(marker)
-        if (objtype==='noties') {
-            coll2.append(datetime)
-            datetime.append(datetimeP)
+        if (isNotices&&isRecord) {
+            coll2.append(datetimeObj)
+            datetimeObj.append(datetimeP)
             coll2.append(space)
         }
         coll2.append(titleBlock)
@@ -687,9 +706,9 @@ let viewContent = {
     // createNotice: function(id, title, labels, color, datetime) {
     //     console.log("createNotice")
     // },
-    createFolder: function(id, title, labels, color) {
-        console.log("createFolder, id=", id)
-    },
+    // createFolder: function(id, title, labels, color) {
+    //     console.log("createFolder, id=", id)
+    // },
     createSVG: function(parent, className, viewBox, pathLst) {
         let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
         svg.setAttributeNS(null, 'class', className)
