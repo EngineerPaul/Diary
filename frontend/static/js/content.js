@@ -340,6 +340,9 @@ let Header = {
         
         viewContent.removeObjects()
         viewContent.displayItems()
+        path.getPathList()
+        path.viewPath()
+
     },
     toggleHeaderField: function() {
         let section = document.getElementById(ContentSettings.section)
@@ -747,7 +750,8 @@ let viewContent = {
         this.currentFolderId = folder_id
         viewContent.removeObjects()
         viewContent.displayItems()
-
+        path.getPathList()
+        path.viewPath()
     },
     openRecord: function(record_id) {
         console.log('Переход на страницу записи ', ContentSettings.section,' типа, id=', record_id)
@@ -767,61 +771,66 @@ let DragAndDrop = {
     
 }
 
-let path = {
-    pathList: [], // список объектов с именем и id
+let path = {  // Directory of folders at the top 
+    pathList: [], // list of objects like [{name, id},...]
 
-    getPathList: function() {
-        // по viewContent.currentFolderId должен рекурсивно создаваться список this.pathList
-        this.pathList = [ // заглушка
-            {name: "Папка 1", id: 7},
-            {name: "Папка 2", id: 8},
-            {name: "Папка 3", id: 11},
-            {name: "Папка 4", id: 5},
-            // {name: "Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 Папка 5 ", id: 12},
-        ]
+    getPathList: function() {  // generate list of folder path for directory
+
+        this.pathList = []
+        let parentId = viewContent.currentFolderId
+        let currentFolderType
+        if (ContentSettings.section==='notes') {
+            currentFolderType = content.noteFolders
+        } else if (ContentSettings.section==='notices') {
+            currentFolderType = content.noticeFolders
+        }
+        this.pathList.unshift({
+            name: currentFolderType[parentId].info.title,
+            id: parentId
+        })
+
+        while (parentId!=0) {
+            parentId = currentFolderType[parentId].info.parent_id
+            if (parentId===0) break
+            this.pathList.unshift({
+                name: currentFolderType[parentId].info.title,
+                id: parentId
+            })
+        }
+        if (this.pathList[0]) {
+            if (ContentSettings.section==='notes') {
+                this.pathList[0].name = 'Заметки'
+            } else if (ContentSettings.section==='notices') {
+                this.pathList[0].name = 'Напоминания'
+            }
+        }
     },
-    viewPath: function() {
+    viewPath: function() {  // display directory
         let path = document.getElementById('path')
         path.innerHTML = ''
-
-        let rootPath = document.createElement('div')
-        rootPath.className = 'path-folder'
-        rootPath.id = 'rootPath'
-        if (ContentSettings.section == 'notes') {
-            rootPath.textContent = 'Заметки'
-        } else if (ContentSettings.section == 'notices') {
-            rootPath.textContent = 'Напоминания'
-        } else {
-            rootPath.textContent = 'Error'
-            return
-        }
-        path.append(rootPath)
-
         for (let i=0; i<this.pathList.length; i++) {
-            let delimiter = document.createElement('span')
-            delimiter.className = 'path-delimiter'
-            delimiter.textContent = ' / '
-            path.append(delimiter)
+            if (i>0) {
+                let delimiter = document.createElement('span')
+                delimiter.className = 'path-delimiter'
+                delimiter.textContent = ' / '
+                path.append(delimiter)
+            }
 
             let pathFolder = document.createElement('div')
             pathFolder.className = 'path-folder'
             pathFolder.textContent = this.pathList[i].name
             path.append(pathFolder)
         }
-        
     },
-    getPath: function(event) {
-        // перейти по новому пути по клику
+    getPath: function(event) {  // open the folder using the directory by click
         if (event.target.className != 'path-folder') return
-        let newFolderId = null
+        let newFolderId
         for (let i=0; i<this.pathList.length; i++) {
             if (this.pathList[i].name === event.target.textContent) {
                 newFolderId = this.pathList[i].id
             }
         }
-        console.log('id = ', newFolderId)
-        this.getPathList()  // получить новый путь при помощи id папки newFolderId
-        // отобразить новый контент при помощи viewContent
+        viewContent.openFolder(newFolderId)
     },
     run: function() {
         this.getPathList()
