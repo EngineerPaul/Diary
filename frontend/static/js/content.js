@@ -332,6 +332,12 @@ let Header = {
         ContentSettings.section = section
 
         this.toggleHeaderField()
+        if (ContentSettings.section === 'notes') {
+            viewContent.currentFolderId = content.notesRoot
+        } else if (ContentSettings.section === 'notices') {
+            viewContent.currentFolderId = content.noticesRoot
+        }
+        
         viewContent.removeObjects()
         viewContent.displayItems()
     },
@@ -725,9 +731,34 @@ let viewContent = {
         let objectsList = document.getElementById('objectsList')
         objectsList.innerHTML = ''
     },
+    openObject: function(event) {
+        if (!(event.target.closest('.dd-object'))) return
+        let folder = event.target.closest('.folder')
+        let record = event.target.closest('.record')
+        if (folder) {
+            this.openFolder(folder.id)
+        }
+        if (record) {
+            this.openRecord(record.id)
+        }
+    },
+    openFolder: function(folder_id) {
+        console.log('Открытие папки ', ContentSettings.section,' типа, id=', folder_id)
+        this.currentFolderId = folder_id
+        viewContent.removeObjects()
+        viewContent.displayItems()
+
+    },
+    openRecord: function(record_id) {
+        console.log('Переход на страницу записи ', ContentSettings.section,' типа, id=', record_id)
+        // console.log(window.location.pathname)
+        // window.location.pathname = '/notes/' + record_id
+    },
     run: function() {
         this.currentFolderId = content.notesRoot
         this.displayItems() // отображение должно подождать завершения ajax запроса контента!!!!!!!
+        let ddArea = document.getElementById('objectsList')
+        ddArea.addEventListener('click', this.openObject.bind(this))
     }
 }
 viewContent.run()
