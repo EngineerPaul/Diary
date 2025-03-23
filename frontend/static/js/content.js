@@ -1,7 +1,10 @@
-let ContentSettings = {
+let session = {
     section: sessionStorage.getItem('section')?
              sessionStorage.getItem('section'):
              'notes',
+}
+session.section
+const ContentSettings = {
     urls: {
         getNotes: 'drf/get-content/getNotes',
         getNoteFolders: 'drf/get-content/getNoteFolders',
@@ -11,12 +14,47 @@ let ContentSettings = {
     token: '',  // authorization
     
 }
-let DADSettings = {
-    objClasses: {
-        folder: 'folder',
-        record: 'record',
-        allDraggable: 'draggableObject'
-    }
+const DADSettings = {  // general settings for DAD
+    "DADObjectHeight": '58px',  // минимальный размер папок и записей
+    "putBeetwenArea": 14.5,  // высота области (px) для логики "перемещения между" (в противовес перемещению внутрь)
+    "draggableClass": 'draggableObject',  // название класса, который участвует в DAD
+    "folderClass": 'folder',  // название класса у каждой папки
+    "recordClass": 'record',  // название класса у каждой записи
+}
+// let DADObject = {  // Properties of the selected dragging Object
+//     "typeObject": null,  // record or folder
+//     "object": null,  // the object itself
+//     "text": null
+// }
+// let stickyDAD  // Drag And Drop HTML Object attached to mouse (pointer)
+const stickyDADSettings = {  // size of DAD Object
+    "width": 300,
+    "height": 44,
+    "opacity": '60%',
+    "border-color": 'rgb(255, 0, 221)',
+}
+
+// // мы будем запомним элемент и четверть в Move-событии для обработки End-события
+// let draggingVariables = {
+//     "dragRelocate": null, // Элемент, над которым был курсор при перемещении объекта
+//     "dragRelocateQuarter": null, // четверть, над которым был курсор при перемещении объекта (1 или 4)
+//     "dragPutInside": null // папка, в которую был помещен объект
+// }
+
+// // переменная, необходимая для запоминания элемента, с которого ушел курсор
+// // это необходимо для снятия выделения ячейки
+// // event.target и event.relatedTarget почему-то на телефоне не работают - см. примечание
+// let leaveObjects = {
+//     "previous": null,
+//     "next": null
+// }
+
+// let isClick = false // включает в down, выключается в move (для вхождения в папку)
+
+const classNames = {
+    settingIcon: 'setting-field',  // gear for each records and folders
+    backFolder: 'folder-back',  // folder for moving back in the directory
+    stickyDAD: 'stickyDAD'  // an object attached to the mouse
 }
 
 let modals = {
@@ -130,195 +168,195 @@ let search = {
 }
 search.run()
 
-let contentTest = {
-    type: null, // notes or notices
-    folders: null,
-    notes: null,
-    notices: null,
+// let contentTest = {
+//     type: null, // notes or notices
+//     folders: null,
+//     notes: null,
+//     notices: null,
 
-    getFolderList: function() {
-        let noteFolderList = [ // заглушка для теста
-            {
-                id: 'f1',
-                title: "note-folder 1",
-                labels: "labelsF 1",
-                color: 'yellow'
-            },
-            {
-                id: 'f2',
-                title: "note-folder 2",
-                labels: "labelsF 2",
-                color: 'green'
-            }
-        ]
-        this.folders = noteFolderList
-        return noteFolderList
-    },
-    getNotes: function() {
-        let noteContentList = [ // заглушка для теста
-            {
-                id: 'n1',
-                title: "note-block 1",
-                labels: "labels 1",
-                color: 'yellow'
-            },
-            {
-                id: 'n2',
-                title: "note-block 2",
-                labels: "labels 2",
-                color: 'red'
-            },
-            {
-                id: 'n3',
-                title: "note-block 3",
-                labels: "labels 3",
-                color: 'green'
-            }
-        ]
-        this.notes = noteContentList
-        return noteContentList
-    },
-    getNoties: function() {
-        let notiesList = [ // заглушка для теста
+//     getFolderList: function() {
+//         let noteFolderList = [ // заглушка для теста
+//             {
+//                 id: 'f1',
+//                 title: "note-folder 1",
+//                 labels: "labelsF 1",
+//                 color: 'yellow'
+//             },
+//             {
+//                 id: 'f2',
+//                 title: "note-folder 2",
+//                 labels: "labelsF 2",
+//                 color: 'green'
+//             }
+//         ]
+//         this.folders = noteFolderList
+//         return noteFolderList
+//     },
+//     getNotes: function() {
+//         let noteContentList = [ // заглушка для теста
+//             {
+//                 id: 'n1',
+//                 title: "note-block 1",
+//                 labels: "labels 1",
+//                 color: 'yellow'
+//             },
+//             {
+//                 id: 'n2',
+//                 title: "note-block 2",
+//                 labels: "labels 2",
+//                 color: 'red'
+//             },
+//             {
+//                 id: 'n3',
+//                 title: "note-block 3",
+//                 labels: "labels 3",
+//                 color: 'green'
+//             }
+//         ]
+//         this.notes = noteContentList
+//         return noteContentList
+//     },
+//     getNoties: function() {
+//         let notiesList = [ // заглушка для теста
 
-        ]
-        this.noties = notiesList
-        return notiesList
-    },
-    viewObjects: function() {
-        let type = ContentSettings.section
-        let folderLst = this.folders
-        let entities = this[type]
+//         ]
+//         this.noties = notiesList
+//         return notiesList
+//     },
+//     viewObjects: function() {
+//         let type = session.section
+//         let folderLst = this.folders
+//         let entities = this[type]
 
-        if (entities === null) { // delete when notices works 
-            console.log('notices doest work')
-            return
-        }
+//         if (entities === null) { // delete when notices works 
+//             console.log('notices doest work')
+//             return
+//         }
 
-        for (let i=0; i<folderLst.length; i++) {
-            this.createFolder(
-                folderLst[i].id, folderLst[i].title, 
-                folderLst[i].labels, folderLst[i].color
-            )
-        }
+//         for (let i=0; i<folderLst.length; i++) {
+//             this.createFolder(
+//                 folderLst[i].id, folderLst[i].title, 
+//                 folderLst[i].labels, folderLst[i].color
+//             )
+//         }
     
-        for (let i=0; i<entities.length; i++) {
-            if (type=="notes") {
-                this.createNote(
-                    id=entities[i].id,
-                    title=entities[i].title, 
-                    labelsLst=entities[i].labels,
-                    color=entities[i].color,
-                    objtype='note'
-                )
-            } else if (type=="notices") {
-                this.createNotice(
-                    id=entities[i].id,
-                    title=entities[i].title, 
-                    labelsLst=entities[i].labels,
-                    color=entities[i].color,
-                    objtype='notices',
-                    datetime=entities[i].datetime
-                )
-            } else alert('viewObjects wrong!')
-        }
-    },
-    createNote: function(id, title, labelsLst, color, objtype, datetime) {
-        let noteBlock = document.createElement("div")
-        let blockRow = document.createElement("div")
-        let coll1 = document.createElement("div")
-            let marker = document.createElement("div")
-            // svg
-        let coll2 = document.createElement("div")
-            if (objtype==='noties') {
-                let datetime = document.createElement("div")
-                let datetimeP = document.createElement("div")
-                let space = document.createElement("span")
-            }
-            let titleBlock = document.createElement("div")
-                let titleP = document.createElement("p")
-        let coll3 = document.createElement("div")
-            let labels = document.createElement("div")
-            // svg
+//         for (let i=0; i<entities.length; i++) {
+//             if (type=="notes") {
+//                 this.createNote(
+//                     id=entities[i].id,
+//                     title=entities[i].title, 
+//                     labelsLst=entities[i].labels,
+//                     color=entities[i].color,
+//                     objtype='note'
+//                 )
+//             } else if (type=="notices") {
+//                 this.createNotice(
+//                     id=entities[i].id,
+//                     title=entities[i].title, 
+//                     labelsLst=entities[i].labels,
+//                     color=entities[i].color,
+//                     objtype='notices',
+//                     datetime=entities[i].datetime
+//                 )
+//             } else alert('viewObjects wrong!')
+//         }
+//     },
+//     createNote: function(id, title, labelsLst, color, objtype, datetime) {
+//         let noteBlock = document.createElement("div")
+//         let blockRow = document.createElement("div")
+//         let coll1 = document.createElement("div")
+//             let marker = document.createElement("div")
+//             // svg
+//         let coll2 = document.createElement("div")
+//             if (objtype==='noties') {
+//                 let datetime = document.createElement("div")
+//                 let datetimeP = document.createElement("div")
+//                 let space = document.createElement("span")
+//             }
+//             let titleBlock = document.createElement("div")
+//                 let titleP = document.createElement("p")
+//         let coll3 = document.createElement("div")
+//             let labels = document.createElement("div")
+//             // svg
 
-        noteBlock.className = "dd-object"
-        noteBlock.id = id
-        blockRow.className = 'block-row'
-        coll1.className = 'coll1'
-        coll2.className = 'coll2'
-        coll3.className = 'coll3'
-        marker.className = 'marker'
-        marker.dataset['color'] = color
-        if (objtype==='noties') {
-            datetime.className = 'datetime'
-            datetimeP.textContent = datetime
-            space.textContent = ' — '
-        }
-        titleBlock.className = 'title'
-        titleP.textContent = title
-        labels.className = 'labels'
-        labels.textContent = 'labels'
+//         noteBlock.className = "dd-object"
+//         noteBlock.id = id
+//         blockRow.className = 'block-row'
+//         coll1.className = 'coll1'
+//         coll2.className = 'coll2'
+//         coll3.className = 'coll3'
+//         marker.className = 'marker'
+//         marker.dataset['color'] = color
+//         if (objtype==='noties') {
+//             datetime.className = 'datetime'
+//             datetimeP.textContent = datetime
+//             space.textContent = ' — '
+//         }
+//         titleBlock.className = 'title'
+//         titleP.textContent = title
+//         labels.className = 'labels'
+//         labels.textContent = 'labels'
 
-        objectsList.append(noteBlock)
-        noteBlock.append(blockRow)
-        blockRow.append(coll1, coll2, coll3)
-        coll1.append(marker)
-        if (objtype==='noties') {
-            coll2.append(datetime)
-            datetime.append(datetimeP)
-            coll2.append(space)
-        }
-        coll2.append(titleBlock)
-        titleBlock.append(titleP)
-        coll3.append(labels)
+//         objectsList.append(noteBlock)
+//         noteBlock.append(blockRow)
+//         blockRow.append(coll1, coll2, coll3)
+//         coll1.append(marker)
+//         if (objtype==='noties') {
+//             coll2.append(datetime)
+//             datetime.append(datetimeP)
+//             coll2.append(space)
+//         }
+//         coll2.append(titleBlock)
+//         titleBlock.append(titleP)
+//         coll3.append(labels)
 
-        this.createSVG(  // type
-            parent=coll1,
-            className='content-svg',
-            viewBox='2 0 20 24',
-            pathLst=[
-                'm7 12h10v2h-10zm0 6h7v-2h-7zm15-10.414v16.414h-20v-21a3 3 0 0 1 3-3h9.414zm-7-.586h3.586l-3.586-3.586zm5 15v-13h-7v-7h-8a1 1 0 0 0 -1 1v19z',
-            ]
-        )
-        this.createSVG(  // settings
-            parent=coll3,
-            className='content-svg',
-            viewBox='0 0 24 24',
-            pathLst=[
-                'M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z',
-                'M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z'
-            ]
-        )
-    },
-    createNotice: function(id, title, labels, color, datetime) {
-        console.log("createNotice")
-    },
-    createFolder: function(id, title, labels, color, datetime) {
-        console.log("createFolder, id=", id)
-    },
-    createSVG: function(parent, className, viewBox, pathLst) {
-        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-        svg.setAttributeNS(null, 'class', className)
-        svg.setAttributeNS(null, 'viewBox', viewBox)
-        for (let i=0; i < pathLst.length; i++) {
-            let svgPath = document.createElementNS("http://www.w3.org/2000/svg", 'path')
-            svgPath.setAttributeNS(null, 'd', pathLst[i])
-            svg.appendChild(svgPath)
-        }
-        parent.append(svg)
-        // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js    
-    },
-    removeObjects: function() {
-        objectsList.innerHTML = ''
-    },
-    run: function() {
-        this.getNotes()
-        this.getFolderList()
-        this.getNoties()
-        // this.viewObjects(ContentSettings.section)
-    }
-}
-contentTest.run()
+//         this.createSVG(  // type
+//             parent=coll1,
+//             className='content-svg',
+//             viewBox='2 0 20 24',
+//             pathLst=[
+//                 'm7 12h10v2h-10zm0 6h7v-2h-7zm15-10.414v16.414h-20v-21a3 3 0 0 1 3-3h9.414zm-7-.586h3.586l-3.586-3.586zm5 15v-13h-7v-7h-8a1 1 0 0 0 -1 1v19z',
+//             ]
+//         )
+//         this.createSVG(  // settings
+//             parent=coll3,
+//             className='content-svg',
+//             viewBox='0 0 24 24',
+//             pathLst=[
+//                 'M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z',
+//                 'M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z'
+//             ]
+//         )
+//     },
+//     createNotice: function(id, title, labels, color, datetime) {
+//         console.log("createNotice")
+//     },
+//     createFolder: function(id, title, labels, color, datetime) {
+//         console.log("createFolder, id=", id)
+//     },
+//     createSVG: function(parent, className, viewBox, pathLst) {
+//         let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+//         svg.setAttributeNS(null, 'class', className)
+//         svg.setAttributeNS(null, 'viewBox', viewBox)
+//         for (let i=0; i < pathLst.length; i++) {
+//             let svgPath = document.createElementNS("http://www.w3.org/2000/svg", 'path')
+//             svgPath.setAttributeNS(null, 'd', pathLst[i])
+//             svg.appendChild(svgPath)
+//         }
+//         parent.append(svg)
+//         // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js    
+//     },
+//     removeObjects: function() {
+//         objectsList.innerHTML = ''
+//     },
+//     run: function() {
+//         this.getNotes()
+//         this.getFolderList()
+//         this.getNoties()
+//         // this.viewObjects(session.section)
+//     }
+// }
+// contentTest.run()
 
 let Header = {
     sections: document.getElementById('sections'),
@@ -329,12 +367,12 @@ let Header = {
 
         section = event.target.closest('.header-field').id
         sessionStorage.setItem('section', section)
-        ContentSettings.section = section
+        session.section = section
 
         this.toggleHeaderField()
-        if (ContentSettings.section === 'notes') {
+        if (session.section === 'notes') {
             viewContent.currentFolderId = content.notesRoot
-        } else if (ContentSettings.section === 'notices') {
+        } else if (session.section === 'notices') {
             viewContent.currentFolderId = content.noticesRoot
         }
         
@@ -345,8 +383,8 @@ let Header = {
 
     },
     toggleHeaderField: function() {
-        let section = document.getElementById(ContentSettings.section)
-        let sectionSecond = ContentSettings.section==='notes'?
+        let section = document.getElementById(session.section)
+        let sectionSecond = session.section==='notes'?
                             document.getElementById('notices'):
                             document.getElementById('notes')
         section.classList.add('selected')
@@ -358,7 +396,6 @@ let Header = {
     }
 }
 Header.run()
-
 
 let content = {
     notes: null,  // dict of notes
@@ -581,29 +618,28 @@ let viewContent = {
     currentType: null,
     currentFolderId: null,
     
-    displayItems: function() {
+    displayItems: function() {  // display all DAD-objects
         // отображение должно подождать завершения ajax запроса контента!!!!!!!
-
-        // let type = ContentSettings.section
-        // let foldersDict, recordsDict
-        let foldersList, recordsList
-        if (ContentSettings.section === 'notes') {
+        let foldersDict, recordsDict, foldersIdList,recordsIdList, isRoot
+        if (session.section === 'notes') {
             foldersDict = content.noteFolders
             recordsDict = content.notes
             foldersIdList = content.noteFolders[this.currentFolderId].folders
             recordsIdList = content.noteFolders[this.currentFolderId].records
-        } else if (ContentSettings.section === 'notices') {
+        } else if (session.section === 'notices') {
             foldersDict = content.noticeFolders
             recordsDict = content.notices
             foldersIdList = content.noticeFolders[this.currentFolderId].folders
             recordsIdList = content.noticeFolders[this.currentFolderId].records
-            // console.log
         } else {
             console.log('viewContent Error: records type doesnt exist')
         }
-        let objectsList = document.getElementById('objectsList')
 
-        // отображение папки "вернуться", если мы не в корне
+        // display back-folder
+        let parent_id = foldersDict[this.currentFolderId].info.parent_id
+        if (parent_id !== 0) {
+            this.createBackFolder(parent_id)
+        }
 
         for (let i=0; i<foldersIdList.length; i++) {
             // this.createFolder(
@@ -617,7 +653,7 @@ let viewContent = {
                 title=foldersDict[foldersIdList[i]].info.title,
                 labels=null,
                 color=foldersDict[foldersIdList[i]].info.color,
-                objtype='folder',
+                objtype=DADSettings.folderClass,
             )
         }
         for (let i=0; i<recordsIdList.length; i++) {
@@ -626,16 +662,26 @@ let viewContent = {
                 title=recordsDict[recordsIdList[i]].title,
                 labelsList=null,
                 color=recordsDict[recordsIdList[i]].color,
-                objtype='record',
+                objtype=DADSettings.recordClass,
                 datetime=recordsDict[recordsIdList[i]].date+' '+recordsDict[recordsIdList[i]].time
             )
         }
 
     },
-    createObject: function(id, title, labelsList, color, objtype, datetime) {
+    createBackFolder: function(parent_id) {  // display object to return to the parent folder
+        let block = document.createElement("div")
+        let titleP = document.createElement("p")
+        block.classList.add(classNames.backFolder)
+        block.classList.add(DADSettings.folderClass)
+        block.id = parent_id
+        titleP.textContent = 'Вернуться...'
+        objectsList.append(block)
+        block.append(titleP)
+    },
+    createObject: function(id, title, labelsList, color, objtype, datetime) {  // create any DAD-object
 
-        let isNotices = ContentSettings.section==='notices'
-        let isRecord = objtype==='record'
+        let isNotices = session.section==='notices'
+        let isRecord = objtype===DADSettings.recordClass
 
         let noteBlock = document.createElement("div")
         let blockRow = document.createElement("div")
@@ -660,9 +706,9 @@ let viewContent = {
         noteBlock.classList.add('dd-object')
         noteBlock.classList.add('draggableObject')
         if (isRecord) {
-            noteBlock.classList.add('record')
+            noteBlock.classList.add(DADSettings.recordClass)
         } else {
-            noteBlock.classList.add('folder')
+            noteBlock.classList.add(DADSettings.folderClass)
         }
         noteBlock.id = id
         blockRow.className = 'block-row'
@@ -730,12 +776,15 @@ let viewContent = {
         parent.append(svg)
         // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js    
     },
-    removeObjects: function() {
+    removeObjects: function() { // clean DAD-area, delete all DAD-objects
         let objectsList = document.getElementById('objectsList')
         objectsList.innerHTML = ''
     },
-    openObject: function(event) {
-        if (!(event.target.closest('.dd-object'))) return
+    openObject: function(event) { // open record or folder or back-folder
+        let isDDobject = event.target.closest('.dd-object')
+        let isBackFolder = event.target.closest(`.${classNames.backFolder}`)
+        if (!(isDDobject || isBackFolder)) return
+        
         let folder = event.target.closest('.folder')
         let record = event.target.closest('.record')
         if (folder) {
@@ -746,7 +795,7 @@ let viewContent = {
         }
     },
     openFolder: function(folder_id) {
-        console.log('Открытие папки ', ContentSettings.section,' типа, id=', folder_id)
+        console.log('Открытие папки ', session.section,' типа, id=', folder_id)
         this.currentFolderId = folder_id
         viewContent.removeObjects()
         viewContent.displayItems()
@@ -754,7 +803,7 @@ let viewContent = {
         path.viewPath()
     },
     openRecord: function(record_id) {
-        console.log('Переход на страницу записи ', ContentSettings.section,' типа, id=', record_id)
+        console.log('Переход на страницу записи ', session.section,' типа, id=', record_id)
         // console.log(window.location.pathname)
         // window.location.pathname = '/notes/' + record_id
     },
@@ -767,10 +816,6 @@ let viewContent = {
 }
 viewContent.run()
 
-let DragAndDrop = {
-    
-}
-
 let path = {  // Directory of folders at the top 
     pathList: [], // list of objects like [{name, id},...]
 
@@ -779,17 +824,17 @@ let path = {  // Directory of folders at the top
         this.pathList = []
         let parentId = viewContent.currentFolderId
         let currentFolderType
-        if (ContentSettings.section==='notes') {
+        if (session.section==='notes') {
             currentFolderType = content.noteFolders
-        } else if (ContentSettings.section==='notices') {
+        } else if (session.section==='notices') {
             currentFolderType = content.noticeFolders
         }
-        this.pathList.unshift({
+        this.pathList.unshift({  // Current folder
             name: currentFolderType[parentId].info.title,
             id: parentId
         })
 
-        while (parentId!=0) {
+        while (parentId!=0) {  // other elems
             parentId = currentFolderType[parentId].info.parent_id
             if (parentId===0) break
             this.pathList.unshift({
@@ -797,10 +842,10 @@ let path = {  // Directory of folders at the top
                 id: parentId
             })
         }
-        if (this.pathList[0]) {
-            if (ContentSettings.section==='notes') {
+        if (this.pathList[0]) { // First folder (section)
+            if (session.section==='notes') {
                 this.pathList[0].name = 'Заметки'
-            } else if (ContentSettings.section==='notices') {
+            } else if (session.section==='notices') {
                 this.pathList[0].name = 'Напоминания'
             }
         }
@@ -840,3 +885,181 @@ let path = {  // Directory of folders at the top
     }
 }
 path.run()
+
+let DragAndDrop = {
+    DADObject: {  // Properties of the selected dragging Object
+        "typeObject": null,  // record or folder
+        "object": null,  // the object itself
+        "text": null
+    },
+    stickyDAD: null,  // Drag And Drop HTML Object attached to mouse (pointer)
+    
+    // мы будем запомним элемент и четверть в Move-событии для обработки End-события
+    draggingVariables: {
+        "dragRelocate": null, // Элемент, над которым был курсор при перемещении объекта
+        "dragRelocateQuarter": null, // четверть, над которым был курсор при перемещении объекта (1 или 4)
+        "dragPutInside": null // папка, в которую был помещен объект
+    },
+
+    // переменная, необходимая для запоминания элемента, с которого ушел курсор
+    // это необходимо для снятия выделения ячейки
+    // event.target и event.relatedTarget почему-то на телефоне не работают - см. примечание
+    leaveObjects: {
+        "previous": null,
+        "next": null
+    },
+
+    isClick: false, // включает в down, выключается в move (для вхождения в папку)
+
+    pointerDownEvent: function(event) {  // click the draggable object
+        let isFolder = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.folderClass}`)
+        let isRecord = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.recordClass}`)
+        if ((isFolder??isRecord)&&event.which != 3) {
+            isClick = true  // вхождение в папку
+        }
+        
+        if (!this.pointerDownEventChecks(event)) {  // проверки на срабатывание DAD
+            return
+        }
+        if (!this.getDADObject(event)) {  // Создание DADObject
+            return
+        }
+
+        window.getSelection().removeAllRanges()  // disable all selection during DD
+        
+        this.enableSelected(this.DADObject.object)
+        
+        let stickyDADCoord = this.getStickyDADCoord(event.clientX, event.clientY) // координаты stickyDAD объекта {x, y}
+        this.createDADIcon(stickyDADCoord.left, stickyDADCoord.top)  // создаем блок-подсказку, приклеенный к мыши
+
+        this.leaveObjects.next = this.DADObject.object  // для работы снятия выделения в pointerMoveEvent
+
+    },
+    pointerDownEventChecks: function(event) {  // any checks for DAD start
+        if (event.which != 1) {  // DAD работает только при нажатии левой кнопки мыши (или пальцем на экран телефона)
+            if (document.body.contains(this.stickyDAD)) {  // удаляем существующие объекты при нажатии не левой кнопки
+                this.disableSelected(this.DADObject.object)
+                document.body.removeChild(this.stickyDAD)
+                this.stickyDAD = undefined
+            }
+            return false
+        }
+    
+        // DAD (нажатие мыши) не срабатывает на папку "вернуться"
+        let isBackFolder = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.folderClass}.${classNames.backFolder}`)
+        if (isBackFolder) {
+            return false
+        }
+        // DAD (нажатие мыши) не срабатывает, если нажимать на область с настройками
+        let isSettingField = document.elementFromPoint(event.clientX, event.clientY).closest(`.${classNames.settingIcon}`)
+        if (isSettingField) {
+            return false
+        }
+        return true
+    },
+    getDADObject: function(event) {  // getting DAD-object
+        // Определяем, на каком объекте произошло нажатие. получаем объект dADObject
+        let folderUnderCursorHTML = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.folderClass}`)
+        let recordUnderCursorHTML = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.recordClass}`)
+        if (folderUnderCursorHTML) {
+            this.DADObject = {
+                "typeObject": `${DADSettings.folderClass}`,
+                "object": folderUnderCursorHTML,
+                "text": 'any folder text'
+                // "text": folderUnderCursorHTML.querySelector(`.folder-content > p`).innerText
+            }
+        } else if (recordUnderCursorHTML) {
+            this.DADObject = {
+                "typeObject": `${DADSettings.recordClass}`,
+                "object": recordUnderCursorHTML,
+                "text": 'any record text'
+                // "text": recordUnderCursorHTML.querySelector(`.record-content > p`).innerText
+            }
+        } else { // никакой объект под мышкой не найден
+            return false
+        }
+        return true
+    },
+    getStickyDADCoord: function(pointerX, pointerY) {  // getting coords for stickyObject
+        // объект не должен визуально выходить за границы области
+
+        // координаты DAD области
+        let objectsList = document.getElementById('objectsList')
+        let bounds = objectsList.getBoundingClientRect()
+        let directMenuCoord = {
+            "left_start": bounds.x,
+            "left_end": bounds.x + bounds.width,
+            "top_start": bounds.y,
+            "top_end": bounds.y + bounds.height,
+        }
+
+        let stickyDADCoord = { // координаты закрепленного DAD объекта
+            "left": pointerX,
+            "top": pointerY
+        }
+
+        // смещение закрепленного объекта на границах DAD-area
+        if (pointerX < directMenuCoord.left_start) {  // Оx
+            stickyDADCoord.left = directMenuCoord.left_start
+        } else if (pointerX > (directMenuCoord.left_end - stickyDADSettings.width)) {
+            stickyDADCoord.left = directMenuCoord.left_end - stickyDADSettings.width
+        } else {
+            stickyDADCoord.left = pointerX
+        }
+        if (pointerY < directMenuCoord.top_start) {  // Oy
+            stickyDADCoord.top = directMenuCoord.top_start
+        } else if (pointerY > (directMenuCoord.top_end - stickyDADSettings.height)) {
+            stickyDADCoord.top = directMenuCoord.top_end - stickyDADSettings.height
+        } else {
+            stickyDADCoord.top = pointerY
+        }
+        stickyDADCoord.top += window.pageYOffset  // смещение вниз при перемещении скролла
+        return stickyDADCoord
+    },
+    createDADIcon: function(left, top) {  // create an object attached to the mouse
+        if (this.stickyDAD !== null) {  // Если объект уже существует, то новый не создаем (защита от багов)
+            return
+        }
+    
+        this.stickyDAD = document.createElement("div") // создаем блок-подсказку, закрепленный за мышкой, вручную
+        this.stickyDAD.className = classNames.stickyDAD
+        this.stickyDAD.id = 'stickyDAD'
+        this.stickyDAD.innerHTML = `
+            <div class="dragging-object" id="dragging_object" style="width: ${stickyDADSettings.width}px; height: ${stickyDADSettings.height}px; border: solid rgb(0, 0, 0) 2px; border-radius: 5px;">
+                <p style="margin-bottom: 0px">${this.DADObject.text}</p>
+            </div>
+        `
+        this.stickyDAD.style.position = 'absolute'
+        this.stickyDAD.style.zIndex = 1000
+        this.stickyDAD.style['pointer-events'] = "none"  // запрещает объекту реагировать на мышь
+        this.stickyDAD.style.left = left + "px"  // создаем объект под мышью
+        this.stickyDAD.style.top = top + "px"
+    
+        let dragging_object = this.stickyDAD.children.item(0)
+        dragging_object.style['background-color'] = 'antiquewhite'
+        dragging_object.style['border-color'] = stickyDADSettings['border-color']
+        dragging_object.style.opacity = stickyDADSettings.opacity
+    
+        // document.body.append(this.stickyDAD)
+
+    },
+    enableSelected(obj) {  // выделяем перетаскиваемый объект
+        obj.style['background-color'] = 'grey'
+    },
+    disableSelected(obj) {  // снимаем выделение с объекта
+        obj.style['background-color'] = null
+    },
+
+    run: function() {
+        // Drag And Drop (DAD) events
+        let objectsList = document.getElementById('objectsList')
+        objectsList.addEventListener(`pointerdown`, this.pointerDownEvent.bind(this));
+        // document.addEventListener(`contextmenu`, disableRightButton); // disable right btn during DD
+        // document.addEventListener(`pointerup`, change4th5thBTN);
+        // document.addEventListener(`pointermove`, pointerMoveEvent);  // document, чтобы DADObject скользил вдоль границы DADArea, когда курсор ее покидает  
+        // document.addEventListener(`pointermove`, pointerMoveEventOut);  // document, чтобы снятие выделение предыдущего объекта работало корректно
+        // document.addEventListener(`pointerup`, pointerUpEvent);
+        // directMenu.addEventListener(`click`, openObject);
+    }
+}
+DragAndDrop.run()

@@ -196,7 +196,7 @@ body {
     .content-window {
         .folder-path {
             display: inline-block;
-            margin-bottom: 6px;
+            margin-bottom: 7px;
 
             .path-folder {
                 display: inline;
@@ -208,7 +208,8 @@ body {
                 cursor: pointer;
             }
         }
-        .dd-object {
+        .dd-object,
+        .folder-back {
             min-height: 50px;
             margin-bottom: 10px;
             border: var(--border-color) 1px solid;
@@ -258,6 +259,17 @@ body {
                     height: 15px;
                     width: 15px
                 }
+            }
+        }
+        .folder-back {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            font-weight: 600;
+
+            p {
+                font-weight: 600;
+                margin-left: 10px;
             }
         }
     }
