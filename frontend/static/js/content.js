@@ -911,6 +911,9 @@ let DragAndDrop = {
 
     isClick: false, // включает в down, выключается в move (для вхождения в папку)
 
+    //////////////////////////////////////////////////////////////////////
+    // Mouse PRESS events
+    //////////////////////////////////////////////////////////////////////
     pointerDownEvent: function(event) {  // click the draggable object
         let isFolder = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.folderClass}`)
         let isRecord = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.recordClass}`)
@@ -1049,16 +1052,449 @@ let DragAndDrop = {
     disableSelected(obj) {  // снимаем выделение с объекта
         obj.style['background-color'] = null
     },
+    disableRightButton: function(event) { // disable right btn during DD
+        if (!(this.isClick || this.DADObject.object)) {
+            return
+        }
+        event.preventDefault()
+    },
+
+    //////////////////////////////////////////////////////////////////////
+    // Mouse MOVE events
+    //////////////////////////////////////////////////////////////////////
+    pointerMoveEvent: function(event) {  // main movement event
+        
+        if (this.stickyDAD !== null) {  // attach sticky object to mouse
+            let stickyDADCoord = this.getStickyDADCoord(event.clientX, event.clientY) // координаты stickyDAD объекта {x, y}
+            this.stickyDAD.style.left = stickyDADCoord.left + "px"
+            this.stickyDAD.style.top = stickyDADCoord.top + "px"
+            document.body.append(this.stickyDAD)
+        }
+        this.isClick = false // disable transition into the folder during DAD
+        if (!this.DADObject.object) return  // Does DAD-object exist?
+    
+        // Находим элемент, над которым в данный момент находится курсор (папка или запись)
+        let elementBelow = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.draggableClass}`)
+    
+        if (!this.checkDraggingElem(elementBelow)) return  // Does event correct?
+    
+        // определяем, в какой зоне (верх, середина, низ) над проносимымы объектом находится курсор
+        let relativePosition = this.getRelativePosition(event, elementBelow)
+    
+        // если под нами папка "вернуться", то элемент нельзя переместить выше нее
+        // если папка не будет перечисленная в общем списке, то зоны не имеют значения (будет только "переместить внутрь")
+        let backFolder = document.getElementsByClassName('folder-back')[0]
+        if ((elementBelow == backFolder) && ['top', 'middle'].includes(relativePosition)) {
+            this.draggingPutInsideFolder(elementBelow)
+            return
+        }
+        
+        // мы перетаскиваем папку или запись (с зажатой ЛКМ)
+        if (this.DADObject.object.classList.contains(DADSettings.folderClass)) {
+            this.draggingFolder(event, elementBelow, relativePosition)
+        } else if (this.DADObject.object.classList.contains(DADSettings.recordClass)) {
+            this.draggingRecord(event, elementBelow, relativePosition)
+        } else {
+            console.log('The object under the cursor is not recognized as a folder or record')
+        }
+    },
+    checkDraggingElem: function(elementBelow) { // check of correctness of the operation
+        if (!elementBelow) {
+            return false
+        }
+        let belowIsFolder = elementBelow.classList.contains(`${DADSettings.folderClass}`)
+        let belowIsRecord = elementBelow.classList.contains(`${DADSettings.recordClass}`)
+        if (this.DADObject !== elementBelow &&  // событие сработало не на том элементе, который мы перемещаем
+            (belowIsFolder || belowIsRecord)) // событие сработало именно на элементе списка папок и записей
+        { return true } else 
+        { return false }
+    },
+    getRelativePosition: function(event, elementBelow) {  // searching for relative cursor position
+        let elementCoord = elementBelow.getBoundingClientRect();
+        let relativeY = event.clientY - elementCoord.y // координата Y относительно начала элемента (сверху вниз)
+        let absoluteY = elementCoord.height // координата Y элемента (его высота)
+
+        // Every element is divided into 3 zones: top, miggle, bottom
+        if (relativeY <= DADSettings.putBeetwenArea) {
+            return 'top'
+        } else if (relativeY <= absoluteY - DADSettings.putBeetwenArea) {
+            return 'middle'
+        } else if (relativeY <= absoluteY) {
+            return 'bottom'
+        } else if (
+            // произошло смещение элемента и координаты "прошлого" элемента изменились
+            document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.folderClass}`) &&
+            elementBelow == document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.folderClass}`).previousElementSibling
+        ) {
+            return false
+        } else {
+            console.log('Error of getRelativePosition()')
+            return false
+        }
+    },
+    draggingFolder: function(event, elementBelow, relativePosition) {  // dragging folder
+        let belowIsFolder = elementBelow.classList.contains(DADSettings.folderClass)
+        if (['middle'].includes(relativePosition) && belowIsFolder) {
+            this.draggingPutInsideFolder(elementBelow, relativePosition)
+        } else if (['top', 'bottom'].includes(relativePosition) && belowIsFolder) {
+            if (!(this.DADObject.object === elementBelow)) {
+                this.disableSelected(elementBelow)  // снятие выделения при перемещении из 2/4 и 3/4
+            }
+            this.draggingInsertElement(event, elementBelow, relativePosition)
+        }
+    },
+    draggingRecord: function(event, elementBelow, relativePosition) {  // dragging record
+        let belowIsFolder = elementBelow.classList.contains(DADSettings.folderClass)
+        if (belowIsFolder) {
+            this.draggingPutInsideFolder(elementBelow, relativePosition)
+        } else {
+            this.draggingInsertElement(event, elementBelow, relativePosition)
+        }
+    },
+    draggingInsertElement: function(event, elementBelow, relativePosition) {  // inserting between
+        
+        // Находим элемент, с которым будем меняться местами
+        let beforeElement = this.getBeforeElement(event.clientY, elementBelow)
+    
+        // Проверяем, нужно ли менять элементы местами
+        if (
+        beforeElement &&
+        this.DADObject.object === beforeElement.previousElementSibling ||
+        this.DADObject.object === beforeElement
+        ) {
+        // Если нет, выходим из функции, чтобы избежать лишних изменений в DOM
+        // resetOptions(draggingVariables)
+        return;
+        }
+    
+        // Вставляем DADObject.object перед beforeElement
+        if (!this.DADObject === elementBelow) {
+            this.disableSelected(elementBelow)  // снятие выделения при перемещении из 2/4 и 3/4
+        }
+    
+        // !!! вставка между
+        elementBelow.parentNode.insertBefore(this.DADObject.object, beforeElement)
+    
+        // запомним элемент и четверть для окончания D&D
+        this.draggingVariables.dragRelocate = elementBelow  // Элемент, над которым был курсор при перемещении объекта
+        this.draggingVariables.dragRelocateQuarter = relativePosition  // четверть, над которым был курсор при перемещении объекта (1 или 4)
+        this.draggingVariables.dragPutInside = null  // папка, в которую был помещен объект
+    
+    },
+    draggingPutInsideFolder: function(elementBelow, relativePosition) {  // inserting inside the folder
+
+        this.enableSelected(elementBelow)
+    
+        // !!! вставка внутрь
+        // запоминаем папку
+        this.draggingVariables.dragRelocate = null  // Элемент, над которым был курсор при перемещении объекта
+        this.draggingVariables.dragRelocateQuarter = null  // четверть, над которым был курсор при перемещении объекта (1 или 4)
+        this.draggingVariables.dragPutInside = elementBelow  // папка, в которую был помещен объект
+    
+    },
+    getBeforeElement: function(cursorCoordY, elementBelow) {  // getting elem that will be shifted by reason of DAD
+        // Находим элемент, с которым будем менять местами во время перетаскивания
+    
+        // Получаем координаты объекта под курсором
+        let elementCoord = elementBelow.getBoundingClientRect()
+    
+        // Находим вертикальную координату центра текущего элемента (отсчитываем heigth вниз)
+        let currentElementCenter = elementCoord.y + elementCoord.height / 2
+    
+        // выбираем beforeElement. Это будет либо элемент, над которым мы парим, либо следующий (ниже).
+        // это необходимо, потому что мы можем вставить элемент только ПЕРЕД выбранным (функция insertBefore)
+        let beforeElement = (cursorCoordY < currentElementCenter) ? // Если курсор выше центра элемента
+            elementBelow :  // возвращаем текущий элемент
+            elementBelow.nextElementSibling  // В ином случае — следующий DOM-элемент
+    
+        return beforeElement;
+    },
+    pointerMoveEventOut: function(event) {
+        // событие перемещения объекта, которое должно сработать в любом случае после pointerMoveEvent
+    
+        if (!this.DADObject.object) return  // событие move может сработать где угодно. Нас интересуют только DAD события
+    
+        let elementBelow = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.draggableClass}`)
+        if (this.leaveObjects.next != elementBelow) {
+            this.leaveObjects.previous = this.leaveObjects.next
+            this.leaveObjects.next = elementBelow
+    
+            if (this.leaveObjects.previous != this.DADObject.object && this.leaveObjects.previous) {
+                this.disableSelected(this.leaveObjects.previous)
+            }
+        }
+    
+        // if (!elementBelow) {
+        //     resetOptions(draggingVariables)  // инфа о соверешнном действии
+        // }
+        return
+    
+    },
+    
+    //////////////////////////////////////////////////////////////////////
+    // Mouse RELEASE events
+    //////////////////////////////////////////////////////////////////////
+    pointerUpEvent: function(event) {  // main pointer up event
+
+        if (!this.DADObject.object) {  // если перемещаемый объект не существует
+            return
+        }
+        if (!this.stickyDAD) {  // если перемещаемый объект не существует
+            return
+        }
+    
+        let elementBelow = (event.target.closest(`.${DADSettings.folderClass}`)) ?
+            event.target.closest(`.${DADSettings.folderClass}`):
+            event.target.closest(`.${DADSettings.recordClass}`)
+        this.disableSelected(this.DADObject.object)
+        if (elementBelow) {
+            this.disableSelected( elementBelow)
+        }
+    
+        if (!this.isClick) {
+            if (this.draggingVariables.dragPutInside) {
+                this.putInsideFolder()
+            } else if (this.draggingVariables.dragRelocate) {
+                this.changeOrder()
+            } else {
+                console.log("Changes does't exist")
+            }
+        }
+        
+        this.removeDADMemory()
+    
+    },
+    removeDADMemory: function() {  // clear information about the completed DAD
+        
+        if (this.leaveObjects.next) {
+            this.disableSelected(this.leaveObjects.next)  // снимаем выделения с объектов
+        }
+    
+        // сбрасываем значения переменных
+        this.resetOptions(this.draggingVariables)  // инфа о соверешнном действии
+        this.resetOptions(this.DADObject)  // инфа о перемещенном объекте действии
+        this.resetOptions(this.leaveObjects)  // инфа о последнем объекте, который пересекала мышь
+    
+        if (document.body.contains(this.stickyDAD)) {  // разрушаем закрепленный DAD-объект - подсказку под мышью/курсором
+            document.body.removeChild(this.stickyDAD)
+            this.stickyDAD = null
+        }
+        if (this.stickyDAD != null) {  // объект создается (pointerdown) и отображается (poitermove) отдельно
+            this.stickyDAD = null
+        }
+    
+    },
+    resetOptions: function(variable) {  // reset properties for next DAD
+        for (let key in variable) {
+            variable[key] = null
+        }
+    },
+
+    //////////////////////////////////////////////////////////////////////
+    // Симуляция функций для обработки данных
+    //////////////////////////////////////////////////////////////////////
+    changeOrder: function() {  // put any object between another objects
+        console.log('Поместить рядом (Заглушка)')
+    //     this.changedInterval = this.getChangedInterval()
+    //     if (changedInterval.newOrder == changedInterval.oldOrder) {
+    //         console.log("Object wasn't moved")
+    //         return
+    //     }
+    //     console.log('Поместил рядом с', draggingVariables.dragRelocate)
+    
+    //     // change order by every record/folder
+    //     if (DADObject.typeObject == 'record') {
+    //         let movableRecord = folder_dict[current_folder_id].records.splice(changedInterval.oldOrder-1, 1)[0]
+    //         folder_dict[current_folder_id].records.splice(changedInterval.newOrder-1, 0, movableRecord)
+    //         let changedRecordOrders = []
+    //         let min = Math.min(changedInterval.oldOrder, changedInterval.newOrder)
+    //         let max = Math.max(changedInterval.oldOrder, changedInterval.newOrder)
+    //         for (let i=min-1; i<=max-1; i++) {
+    //             record_dict[folder_dict[current_folder_id].records[i]].order_id = i+1
+    //             changedRecordOrders.push([
+    //                 folder_dict[current_folder_id].records[i], 
+    //                 record_dict[folder_dict[current_folder_id].records[i]].order_id
+    //             ])
+    //         }
+    //         changeRecordsOrders(changedRecordOrders)
+    //     } else if (DADObject.typeObject == 'folder') {
+    //         let movableFolder = folder_dict[current_folder_id].folders.splice(changedInterval.oldOrder-1, 1)[0]
+    //         folder_dict[current_folder_id].folders.splice(changedInterval.newOrder-1, 0, movableFolder)
+    //         let changedRecordOrders = []
+    //         let min = Math.min(changedInterval.oldOrder, changedInterval.newOrder)
+    //         let max = Math.max(changedInterval.oldOrder, changedInterval.newOrder)
+    //         for (let i=min-1; i<=max-1; i++) {
+    //             folder_dict[folder_dict[current_folder_id].folders[i]].info.order_id = i+1
+    //             changedRecordOrders.push([
+    //                 folder_dict[current_folder_id].folders[i], 
+    //                 folder_dict[folder_dict[current_folder_id].folders[i]].info.order_id
+    //             ])
+    //         }
+    //         changeFoldersOrders(changedRecordOrders)
+    //     } else {
+    //         console.log('Error: incorrect type of DADObject.typeObject')
+    //     }
+    //     display_items(folder_dict[current_folder_id].folders, folder_dict[current_folder_id].records)
+    },
+    // getChangedInterval: function() {  // getting new and old order id
+    //     let changedObjects = {
+    //         'type': this.DADObject.typeObject, // folder of record
+    //         'objectList': null, // list of html objects
+    //         'objDict': null, // dictionary of folder/record DB objects
+    //     }
+    //     let changedInterval = {
+    //         'newOrder': null,
+    //         'oldOrder': null,
+    //     }
+    
+    //     // if (session.section === 'notes') {
+    //     //     if (this.DADObject.typeObject == `${DADSettings.folderClass}`) {
+    //     //         changedObjects.objectList = document.getElementsByClassName(DADSettings.folderClass)
+    //     //         // changedObjects.objectList = html_folders.children
+    //     //         changedObjects.objDict = this.content.noteFolders
+    //     //     } else {
+    //     //         changedObjects.objectList = document.getElementsByClassName(DADSettings.recordClass)
+    //     //         // changedObjects.objectList = html_records.children
+    //     //         changedObjects.objDict = this.content.record
+    //     //     }
+    //     // } else {
+    //     //     if (this.DADObject.typeObject == `${DADSettings.folderClass}`) {
+    //     //         changedObjects.objectList = document.getElementsByClassName(DADSettings.folderClass)
+    //     //         // changedObjects.objectList = html_folders.children
+    //     //         changedObjects.objDict = this.content.folderDict
+    //     //     } else {
+    //     //         changedObjects.objectList = document.getElementsByClassName(DADSettings.recordClass)
+    //     //         // changedObjects.objectList = html_records.children
+    //     //         changedObjects.objDict = this.content.record
+    //     //         changedObjects.objDict = record_dict
+    //     //     }
+    //     // }
+    //     if (this.DADObject.typeObject == `${DADSettings.folderClass}`) {
+    //         changedObjects.objectList = document.getElementsByClassName(DADSettings.folderClass)
+    //         // changedObjects.objectList = html_folders.children
+    //         changedObjects.objDict = document.getElementsByClassName(DADSettings.recordClass)
+    //     } else {
+    //         changedObjects.objectList = document.getElementsByClassName(DADSettings.recordClass)
+    //         // changedObjects.objectList = html_records.children
+    //         changedObjects.objDict = this.content.record
+    //         changedObjects.objDict = record_dict
+    //     }
+        
+    
+    //     // finding new order of dragable object
+    //     for (let i=0; i<changedObjects.objectList.length; i++) {
+    //         if (changedObjects.objectList[i].dataset.ddobjectid == DADObject.object.dataset.ddobjectid) {
+    //             // changedObjects.objectID = DADObject.object.dataset.ddobjectid
+    //             changedInterval.oldOrder = changedObjects.type == 'folder'?
+    //                 changedObjects.objDict[DADObject.object.dataset.ddobjectid].info.order_id:
+    //                 changedObjects.objDict[DADObject.object.dataset.ddobjectid].order_id
+    //             changedInterval.newOrder = i+1
+    //             break
+    //         }
+    //     }
+    //     // console.log(`
+    //     //     finded! ID=${DADObject.object.dataset.ddobjectid}, 
+    //     //     oldOrderID=${changedInterval.oldOrder}, 
+    //     //     newOrderID=${changedInterval.newOrder}
+    //     // `)
+    //     return changedInterval
+    // },
+    putInsideFolder: function() {
+        // put object (record or folder) in folder
+        console.log('Поместить внутрь папки (Заглушка)')
+    
+        // console.log('putInsideFolder')
+    
+        // let currentDADObjectID = DADObject.object.dataset.ddobjectid
+        
+        // let elementBelow = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.draggableClass}`)
+        // if (!elementBelow) {
+        //     return
+        // }
+        // if (!elementBelow.classList.contains(DADSettings.folderClass)) {
+        //     return
+        // }
+        // if (!(draggingVariables.dragPutInside && DADObject.object && folder_dict[current_folder_id])) {
+        //     return
+        // }
+        // if (DADObject.typeObject == DADSettings.folderClass &&
+        //     DADObject.object.dataset.ddobjectid == draggingVariables.dragPutInside.dataset.ddobjectid) {
+        //     return // Folder can't relocate inside itself
+        // }
+    
+        // console.log('Поместил в ', draggingVariables.dragPutInside)
+    
+        // let inletFolderID = parseInt(draggingVariables.dragPutInside.dataset.ddobjectid)
+        // let outletFolderID = current_folder_id
+        // let currentOrder = null
+    
+        // // change DAD-object
+        // if (DADObject.typeObject == 'record') {
+        //     let record_id = DADObject.object.dataset.ddobjectid
+        //     currentOrder = record_dict[record_id].order_id
+        //     folder_dict[inletFolderID].records.push(record_id)
+        //     folder_dict[outletFolderID].records.splice(record_dict[record_id].order_id-1, 1)
+        //     record_dict[record_id].parent_id = inletFolderID
+        //     record_dict[record_id].order_id = folder_dict[inletFolderID].records.length
+        //     changeRecordRequest(
+        //         record_id, 
+        //         (record_dict[record_id].parent_id, record_dict[record_id].order_id)
+        //     )
+        // } else if (DADObject.typeObject == 'folder') {
+        //     let folder_id = DADObject.object.dataset.ddobjectid
+        //     currentOrder = folder_dict[folder_id].info.order_id
+        //     folder_dict[inletFolderID].folders.push(folder_id)
+        //     folder_dict[outletFolderID].folders.splice(folder_dict[folder_id].info.order_id-1, 1)
+        //     folder_dict[folder_id].info.parent_id = inletFolderID
+        //     folder_dict[folder_id].info.order_id = folder_dict[inletFolderID].folders.length
+        //     changeFolderRequest(
+        //         folder_id, 
+        //         (folder_dict[folder_id].parent_id, folder_dict[folder_id].order_id)
+        //     )
+        // } else {
+        //     console.log('Error: incorrect type of DADObject.typeObject')
+        //     return
+        // }
+    
+        // // change orders
+        // if (DADObject.typeObject == 'record') {
+        //     let changedRecordOrders = []
+        //     for (let i=currentOrder-1; i<folder_dict[current_folder_id].records.length; i++) {
+        //         record_dict[folder_dict[current_folder_id].records[i]].order_id -= 1
+        //         changedRecordOrders.push([
+        //             folder_dict[current_folder_id].records[i], 
+        //             record_dict[folder_dict[current_folder_id].records[i]].order_id
+        //         ])
+        //     }
+        //     changeRecordsOrders(changedRecordOrders)
+        // } else if (DADObject.typeObject == 'folder') {
+        //     let changedRecordOrders = []
+        //     for (let i=currentOrder-1; i<folder_dict[current_folder_id].folders.length; i++) {
+        //         folder_dict[folder_dict[current_folder_id].folders[i]].info.order_id -= 1
+        //         changedRecordOrders.push([
+        //             folder_dict[current_folder_id].folders[i], 
+        //             folder_dict[folder_dict[current_folder_id].folders[i]].info.order_id
+        //         ])
+        //     }
+        //     changeFoldersOrders(changedRecordOrders)
+        // } else {
+        //     console.log('Error: incorrect type of DADObject.typeObject')
+        //     return
+        // }
+        // display_items(folder_dict[current_folder_id].folders, folder_dict[current_folder_id].records)
+    },
+    
+    
 
     run: function() {
         // Drag And Drop (DAD) events
         let objectsList = document.getElementById('objectsList')
         objectsList.addEventListener(`pointerdown`, this.pointerDownEvent.bind(this));
-        // document.addEventListener(`contextmenu`, disableRightButton); // disable right btn during DD
+        document.addEventListener(`contextmenu`, this.disableRightButton.bind(this)); // disable right btn during DD
         // document.addEventListener(`pointerup`, change4th5thBTN);
-        // document.addEventListener(`pointermove`, pointerMoveEvent);  // document, чтобы DADObject скользил вдоль границы DADArea, когда курсор ее покидает  
-        // document.addEventListener(`pointermove`, pointerMoveEventOut);  // document, чтобы снятие выделение предыдущего объекта работало корректно
-        // document.addEventListener(`pointerup`, pointerUpEvent);
+        document.addEventListener(`pointermove`, this.pointerMoveEvent.bind(this));  // document, чтобы DADObject скользил вдоль границы DADArea, когда курсор ее покидает  
+        document.addEventListener(`pointermove`, this.pointerMoveEventOut.bind(this));  // document, чтобы снятие выделение предыдущего объекта работало корректно
+        document.addEventListener(`pointerup`, this.pointerUpEvent.bind(this));
         // directMenu.addEventListener(`click`, openObject);
     }
 }
