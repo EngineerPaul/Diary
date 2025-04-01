@@ -21,36 +21,12 @@ const DADSettings = {  // general settings for DAD
     "folderClass": 'folder',  // название класса у каждой папки
     "recordClass": 'record',  // название класса у каждой записи
 }
-// let DADObject = {  // Properties of the selected dragging Object
-//     "typeObject": null,  // record or folder
-//     "object": null,  // the object itself
-//     "text": null
-// }
-// let stickyDAD  // Drag And Drop HTML Object attached to mouse (pointer)
 const stickyDADSettings = {  // size of DAD Object
     "width": 300,
     "height": 44,
     "opacity": '60%',
     "border-color": 'rgb(255, 0, 221)',
 }
-
-// // мы будем запомним элемент и четверть в Move-событии для обработки End-события
-// let draggingVariables = {
-//     "dragRelocate": null, // Элемент, над которым был курсор при перемещении объекта
-//     "dragRelocateQuarter": null, // четверть, над которым был курсор при перемещении объекта (1 или 4)
-//     "dragPutInside": null // папка, в которую был помещен объект
-// }
-
-// // переменная, необходимая для запоминания элемента, с которого ушел курсор
-// // это необходимо для снятия выделения ячейки
-// // event.target и event.relatedTarget почему-то на телефоне не работают - см. примечание
-// let leaveObjects = {
-//     "previous": null,
-//     "next": null
-// }
-
-// let isClick = false // включает в down, выключается в move (для вхождения в папку)
-
 const classNames = {
     settingIcon: 'setting-field',  // gear for each records and folders
     backFolder: 'folder-back',  // folder for moving back in the directory
@@ -113,8 +89,7 @@ let modals = {
 modals.run()
 
 let search = {
-    getSearchList: function() {
-        // получение полного списка потенциальных объектов
+    getSearchList: function() {  // getting a search list
         searchListTest = [ // Заглушка для теста до получения настоящего контента
             'О Нас',
             'Основа',
@@ -126,9 +101,8 @@ let search = {
         ]
         return searchListTest
     },
-    showSearchList: function(event) {
-        // поиск 
-        if (event.target != searchQueryInput) return // событие вне searc поля (доп. проверка)
+    showSearchList: function(event) {  // display the drop down list
+        if (event.target != searchQueryInput) return // событие вне search поля (доп. проверка)
 
         let searchValueUpper = searchQueryInput.value.toUpperCase()
         if (searchValueUpper == '') { // если поисковое слово удалено
@@ -139,7 +113,6 @@ let search = {
 
         searchDropdown.style['display'] = 'block'
         searchDropdown.innerHTML = ''
-        // console.log('Value of #searchQueryInput is ', searchValueUpper)
         searchListOriginal = this.getSearchList()
         seacrhListFiltered = []
         for (let i = 0; i < searchListOriginal.length; i++) {
@@ -154,8 +127,7 @@ let search = {
             searchDropdown.append(searchElemI)
         }
     },
-    hideSearchList: function(event) {
-        // удаление выпадающего списка строки поиска
+    hideSearchList: function(event) {  // deletion the drop down list
         if (searchDropdown.style['display'] != 'block') return // выпадающего списка нет
         if (event.target == searchQueryInput) return // нажатие по поисковой строке
         searchDropdown.style['display'] = 'none'
@@ -167,196 +139,6 @@ let search = {
     }
 }
 search.run()
-
-// let contentTest = {
-//     type: null, // notes or notices
-//     folders: null,
-//     notes: null,
-//     notices: null,
-
-//     getFolderList: function() {
-//         let noteFolderList = [ // заглушка для теста
-//             {
-//                 id: 'f1',
-//                 title: "note-folder 1",
-//                 labels: "labelsF 1",
-//                 color: 'yellow'
-//             },
-//             {
-//                 id: 'f2',
-//                 title: "note-folder 2",
-//                 labels: "labelsF 2",
-//                 color: 'green'
-//             }
-//         ]
-//         this.folders = noteFolderList
-//         return noteFolderList
-//     },
-//     getNotes: function() {
-//         let noteContentList = [ // заглушка для теста
-//             {
-//                 id: 'n1',
-//                 title: "note-block 1",
-//                 labels: "labels 1",
-//                 color: 'yellow'
-//             },
-//             {
-//                 id: 'n2',
-//                 title: "note-block 2",
-//                 labels: "labels 2",
-//                 color: 'red'
-//             },
-//             {
-//                 id: 'n3',
-//                 title: "note-block 3",
-//                 labels: "labels 3",
-//                 color: 'green'
-//             }
-//         ]
-//         this.notes = noteContentList
-//         return noteContentList
-//     },
-//     getNoties: function() {
-//         let notiesList = [ // заглушка для теста
-
-//         ]
-//         this.noties = notiesList
-//         return notiesList
-//     },
-//     viewObjects: function() {
-//         let type = session.section
-//         let folderLst = this.folders
-//         let entities = this[type]
-
-//         if (entities === null) { // delete when notices works 
-//             console.log('notices doest work')
-//             return
-//         }
-
-//         for (let i=0; i<folderLst.length; i++) {
-//             this.createFolder(
-//                 folderLst[i].id, folderLst[i].title, 
-//                 folderLst[i].labels, folderLst[i].color
-//             )
-//         }
-    
-//         for (let i=0; i<entities.length; i++) {
-//             if (type=="notes") {
-//                 this.createNote(
-//                     id=entities[i].id,
-//                     title=entities[i].title, 
-//                     labelsLst=entities[i].labels,
-//                     color=entities[i].color,
-//                     objtype='note'
-//                 )
-//             } else if (type=="notices") {
-//                 this.createNotice(
-//                     id=entities[i].id,
-//                     title=entities[i].title, 
-//                     labelsLst=entities[i].labels,
-//                     color=entities[i].color,
-//                     objtype='notices',
-//                     datetime=entities[i].datetime
-//                 )
-//             } else alert('viewObjects wrong!')
-//         }
-//     },
-//     createNote: function(id, title, labelsLst, color, objtype, datetime) {
-//         let noteBlock = document.createElement("div")
-//         let blockRow = document.createElement("div")
-//         let coll1 = document.createElement("div")
-//             let marker = document.createElement("div")
-//             // svg
-//         let coll2 = document.createElement("div")
-//             if (objtype==='noties') {
-//                 let datetime = document.createElement("div")
-//                 let datetimeP = document.createElement("div")
-//                 let space = document.createElement("span")
-//             }
-//             let titleBlock = document.createElement("div")
-//                 let titleP = document.createElement("p")
-//         let coll3 = document.createElement("div")
-//             let labels = document.createElement("div")
-//             // svg
-
-//         noteBlock.className = "dd-object"
-//         noteBlock.id = id
-//         blockRow.className = 'block-row'
-//         coll1.className = 'coll1'
-//         coll2.className = 'coll2'
-//         coll3.className = 'coll3'
-//         marker.className = 'marker'
-//         marker.dataset['color'] = color
-//         if (objtype==='noties') {
-//             datetime.className = 'datetime'
-//             datetimeP.textContent = datetime
-//             space.textContent = ' — '
-//         }
-//         titleBlock.className = 'title'
-//         titleP.textContent = title
-//         labels.className = 'labels'
-//         labels.textContent = 'labels'
-
-//         objectsList.append(noteBlock)
-//         noteBlock.append(blockRow)
-//         blockRow.append(coll1, coll2, coll3)
-//         coll1.append(marker)
-//         if (objtype==='noties') {
-//             coll2.append(datetime)
-//             datetime.append(datetimeP)
-//             coll2.append(space)
-//         }
-//         coll2.append(titleBlock)
-//         titleBlock.append(titleP)
-//         coll3.append(labels)
-
-//         this.createSVG(  // type
-//             parent=coll1,
-//             className='content-svg',
-//             viewBox='2 0 20 24',
-//             pathLst=[
-//                 'm7 12h10v2h-10zm0 6h7v-2h-7zm15-10.414v16.414h-20v-21a3 3 0 0 1 3-3h9.414zm-7-.586h3.586l-3.586-3.586zm5 15v-13h-7v-7h-8a1 1 0 0 0 -1 1v19z',
-//             ]
-//         )
-//         this.createSVG(  // settings
-//             parent=coll3,
-//             className='content-svg',
-//             viewBox='0 0 24 24',
-//             pathLst=[
-//                 'M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z',
-//                 'M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z'
-//             ]
-//         )
-//     },
-//     createNotice: function(id, title, labels, color, datetime) {
-//         console.log("createNotice")
-//     },
-//     createFolder: function(id, title, labels, color, datetime) {
-//         console.log("createFolder, id=", id)
-//     },
-//     createSVG: function(parent, className, viewBox, pathLst) {
-//         let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-//         svg.setAttributeNS(null, 'class', className)
-//         svg.setAttributeNS(null, 'viewBox', viewBox)
-//         for (let i=0; i < pathLst.length; i++) {
-//             let svgPath = document.createElementNS("http://www.w3.org/2000/svg", 'path')
-//             svgPath.setAttributeNS(null, 'd', pathLst[i])
-//             svg.appendChild(svgPath)
-//         }
-//         parent.append(svg)
-//         // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js    
-//     },
-//     removeObjects: function() {
-//         objectsList.innerHTML = ''
-//     },
-//     run: function() {
-//         this.getNotes()
-//         this.getFolderList()
-//         this.getNoties()
-//         // this.viewObjects(session.section)
-//     }
-// }
-// contentTest.run()
 
 let Header = {
     sections: document.getElementById('sections'),
@@ -423,19 +205,21 @@ let content = {
         this.date = date
         this.time = time
     },
-    Folder: function(folder_id, folder_name, order_id, color, parent_id) {
+    Folder: function(folder_id, folder_name, order_id, color, parent_id, children) {
         // create folder object using new notation
         this.folder_id = folder_id
         this.title = folder_name
         this.order_id = order_id
         this.color = color
         this.parent_id = parent_id
+        this.children = children  // str of object ids like 'f9,f10,n7,n9,n5,n4,n12'
     },
 
     getContentAJAX: function(url, token) { // заглушка
         // getting list like content from the server by url
 
         // сейчас работает заглушка. В зависимости от url вовращается разный контент
+        // f - folder, n - note/notice
         let notes = [  // заглушка
             [7, 'record 1', 1, null, 7],
             [11, 'record 1.1', 1, 'red', 9],
@@ -465,19 +249,19 @@ let content = {
             [47, 'record 10', 10, null, 7],
         ]
         let noteFolders = [
-            [7, 'root', 1, null, 0],
-            [8, 'папка 1.1', 1, null, 9],
-            [9, 'папка 1', 1, null, 7],
-            [17, 'папка 3.1', 1, null, 16],
-            [23, 'папка 1.1.1', 1, null, 8],
-            [27, 'папка 4.1', 1, null, 14],
-            [34, 'папка 3.1.1', 1, null, 17],
-            [36, 'папка 3.1.1.1', 1, null, 34],
-            [10, 'папка 2', 2, 'red', 7],
-            [21, 'папка 1.2', 2, 'yellow', 9],
-            [16, 'папка 3', 3, 'green', 7],
-            [22, 'папка 1.3', 3, null, 9],
-            [14, 'папка 4', 4, 'yellow', 7],
+            [7, 'root', 1, null, 0, 'f9,f10,f16,f14,n7,n9,n5,n4,n12,n14,n26,n32,n19,n47'],
+            [8, 'папка 1.1', 1, null, 9, 'f23,n24,n27'],
+            [9, 'папка 1', 1, null, 7, 'f8,f21,f22,n11,n13'],
+            [17, 'папка 3.1', 1, null, 16, 'f34,n55,n53'],
+            [23, 'папка 1.1.1', 1, null, 8, ''],
+            [27, 'папка 4.1', 1, null, 14, 'n56,n61'],
+            [34, 'папка 3.1.1', 1, null, 17, 'f36'],
+            [36, 'папка 3.1.1.1', 1, null, 34, ''],
+            [10, 'папка 2', 2, 'red', 7, 'n17,n18'],
+            [21, 'папка 1.2', 2, 'yellow', 9, 'n34,n41'],
+            [16, 'папка 3', 3, 'green', 7, 'f17,n32'],
+            [22, 'папка 1.3', 3, null, 9, 'n29'],
+            [14, 'папка 4', 4, 'yellow', 7, 'f27'],
         ]
         let notices = [
             [7, 'notice 1', 1, null, 7, '15.05.2025', '12:00'],
@@ -508,19 +292,19 @@ let content = {
             [47, 'notice 10', 10, null, 7, '15.05.2025', '12:00'],
         ]
         let noticeFolders = [
-            [7, 'root', 1, null, 0],
-            [8, 'папка 1.1', 1, null, 9],
-            [9, 'папка 1 notice', 1, null, 7],
-            [17, 'папка 3.1', 1, null, 16],
-            [23, 'папка 1.1.1', 1, null, 8],
-            [27, 'папка 4.1', 1, null, 14],
-            [34, 'папка 3.1.1', 1, null, 17],
-            [36, 'папка 3.1.1.1', 1, null, 34],
-            [10, 'папка 2', 2, 'red', 7],
-            [21, 'папка 1.2', 2, 'yellow', 9],
-            [16, 'папка 3', 3, 'green', 7],
-            [22, 'папка 1.3', 3, null, 9],
-            [14, 'папка 4', 4, 'yellow', 7],
+            [7, 'root', 1, null, 0, 'f9,f10,f16,f14,n7,n9,n5,n4,n12,n14,n26,n32,n19,n47'],
+            [8, 'папка 1.1', 1, null, 9, 'f23,n24,n27'],
+            [9, 'папка 1 notice', 1, null, 7, 'f8,f21,f22,n11,n13'],
+            [17, 'папка 3.1', 1, null, 16, 'f34,n55,n53'],
+            [23, 'папка 1.1.1', 1, null, 8, ''],
+            [27, 'папка 4.1', 1, null, 14, 'n56,n61'],
+            [34, 'папка 3.1.1', 1, null, 17, 'f36'],
+            [36, 'папка 3.1.1.1', 1, null, 34, ''],
+            [10, 'папка 2', 2, 'red', 7, 'n17,n18'],
+            [21, 'папка 1.2', 2, 'yellow', 9, 'n34,n41'],
+            [16, 'папка 3', 3, 'green', 7, 'f17,n32'],
+            [22, 'папка 1.3', 3, null, 9, 'n29'],
+            [14, 'папка 4', 4, 'yellow', 7, 'f27'],
         ]
         
         let lst = null
@@ -546,8 +330,7 @@ let content = {
         }
         return listOfObjects
     },
-    getDictOfRecords: function(listOfRecords) {
-        // getting dictionary of records by record_id
+    getDictOfRecords: function(listOfRecords) {  // getting dictionary of records by record_id
         let record_dict = {}
         for (let record_i=0; record_i < listOfRecords.length; record_i++) {
             record_dict[listOfRecords[record_i].record_id] = listOfRecords[record_i]
@@ -571,17 +354,16 @@ let content = {
                 records: [],
                 info: listOfFolders[folder_i]
             }
-        }
-        for (let folder_i=0; folder_i < listOfFolders.length; folder_i++) {
-            if (listOfFolders[folder_i].parent_id==0) continue
-            folderDict[listOfFolders[folder_i].parent_id].folders.push(listOfFolders[folder_i].folder_id)
-        }
-        return folderDict
-    },
-    fillOutFolderDict: function(folderDict, recordList) {
-        // fill out record id in folders
-        for (let record_i=0; record_i < recordList.length; record_i++) {
-            folderDict[recordList[record_i].parent_id].records.push(recordList[record_i].record_id)
+
+            let children = listOfFolders[folder_i].children.split(',')
+            for (let i=0; i<children.length;i++) {
+                if (children[i][0]==='f') {
+                    folderDict[listOfFolders[folder_i].folder_id].folders.push(children[i])
+                } else {
+                    folderDict[listOfFolders[folder_i].folder_id].records.push(children[i])
+                }
+            } 
+
         }
         return folderDict
     },
@@ -591,18 +373,16 @@ let content = {
         let noteFoldersList = this.getListOfObjects(ContentSettings.urls.getNoteFolders, this.Folder)
         let notesDict = this.getDictOfRecords(notesList)
         let noteFoldersDict = this.getDictOfFolders(noteFoldersList)
-        let noteFoldersDictFilled = this.fillOutFolderDict(noteFoldersDict, notesList)
 
         let noticesList = this.getListOfObjects(ContentSettings.urls.getNotices, this.Notice)
         let noticeFoldersList = this.getListOfObjects(ContentSettings.urls.getNoticeFolders, this.Folder)
         let noticesDict = this.getDictOfRecords(noticesList)
         let noticeFoldersDict = this.getDictOfFolders(noticeFoldersList)
-        let noticeFoldersDictFilled = this.fillOutFolderDict(noticeFoldersDict, noticesList)
         
         this.notes = notesDict
-        this.noteFolders = noteFoldersDictFilled
+        this.noteFolders = noteFoldersDict
         this.notices = noticesDict
-        this.noticeFolders = noticeFoldersDictFilled
+        this.noticeFolders = noticeFoldersDict
 
         this.notesRoot = noteFoldersList[0].folder_id
         this.noticesRoot = noticeFoldersList[0].folder_id
@@ -624,13 +404,25 @@ let viewContent = {
         if (session.section === 'notes') {
             foldersDict = content.noteFolders
             recordsDict = content.notes
-            foldersIdList = content.noteFolders[this.currentFolderId].folders
-            recordsIdList = content.noteFolders[this.currentFolderId].records
+            foldersIdList = Array.from(content.noteFolders[this.currentFolderId].folders)
+            for (let i=0; i<foldersIdList.length;i++) {
+                foldersIdList[i] = foldersIdList[i].slice(1,)
+            }
+            recordsIdList = Array.from(content.noteFolders[this.currentFolderId].records)
+            for (let i=0; i<recordsIdList.length;i++) {
+                recordsIdList[i] = recordsIdList[i].slice(1,)
+            }
         } else if (session.section === 'notices') {
             foldersDict = content.noticeFolders
             recordsDict = content.notices
-            foldersIdList = content.noticeFolders[this.currentFolderId].folders
-            recordsIdList = content.noticeFolders[this.currentFolderId].records
+            foldersIdList = Array.from(content.noticeFolders[this.currentFolderId].folders)
+            for (let i=0; i<foldersIdList.length;i++) {
+                foldersIdList[i] = foldersIdList[i].slice(1,)
+            }
+            recordsIdList = Array.from(content.noticeFolders[this.currentFolderId].records)
+            for (let i=0; i<recordsIdList.length;i++) {
+                recordsIdList[i] = recordsIdList[i].slice(1,)
+            }
         } else {
             console.log('viewContent Error: records type doesnt exist')
         }
@@ -642,12 +434,9 @@ let viewContent = {
         }
 
         for (let i=0; i<foldersIdList.length; i++) {
-            // this.createFolder(
-            //     id=foldersDict[foldersIdList[i]].info.folder_id,
-            //     title=foldersDict[foldersIdList[i]].info.title,
-            //     labels=null,
-            //     color=foldersDict[foldersIdList[i]].info.color,
-            // )
+            // console.log('foldersDict', foldersDict)
+            // console.log('foldersDict[foldersIdList[i]]', foldersDict[foldersIdList[i]])
+            // console.log('foldersIdList[i]', foldersIdList[i])
             this.createObject(
                 id=foldersDict[foldersIdList[i]].info.folder_id,
                 title=foldersDict[foldersIdList[i]].info.title,
@@ -758,12 +547,6 @@ let viewContent = {
             ]
         )
     },
-    // createNotice: function(id, title, labels, color, datetime) {
-    //     console.log("createNotice")
-    // },
-    // createFolder: function(id, title, labels, color) {
-    //     console.log("createFolder, id=", id)
-    // },
     createSVG: function(parent, className, viewBox, pathLst) {
         let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
         svg.setAttributeNS(null, 'class', className)
@@ -1495,7 +1278,40 @@ let DragAndDrop = {
         document.addEventListener(`pointermove`, this.pointerMoveEvent.bind(this));  // document, чтобы DADObject скользил вдоль границы DADArea, когда курсор ее покидает  
         document.addEventListener(`pointermove`, this.pointerMoveEventOut.bind(this));  // document, чтобы снятие выделение предыдущего объекта работало корректно
         document.addEventListener(`pointerup`, this.pointerUpEvent.bind(this));
-        // directMenu.addEventListener(`click`, openObject);
     }
 }
 DragAndDrop.run()
+
+
+// let inlet = 'f9,f10,f16,f14,n7,n9,n5,n4,n12,n14,n26,n32,n19,n47'
+// let outlet1 = [9, 10, 16, 14]
+// let outlet2 = [7, 9, 5, 4, 12, 14, 26, 32, 19, 47]
+
+// const getList = function(inlet) {
+//     let lst = inlet.split(',')
+//     out1 = []
+//     out2 = []
+//     for (let i=0; i<lst.length;i++) {
+//         if (lst[i][0]==='f') {
+//             out1.push(Number(lst[i].slice(1)))
+//         } else if (lst[i][0]==='n') {
+//             out2.push(Number(lst[i].slice(1)))
+//         }
+//     }
+//     console.log('out1', out1)
+//     console.log('out2', out2)
+//     return out1, out2
+// }
+
+// const getString = function(out1, out2) {
+//     let outlst = ''
+//     for (let i=0; i<out1.length;i++) {
+//         outlst += 'f'+out1[i]+','
+//     }
+//     for (let i=0; i<out2.length;i++) {
+//         outlst += 'n'+out2[i]+','
+//     }
+//     outlst = outlst.slice(0, -1)
+//     console.log('outlst', outlst)
+//     return outlst
+// }
