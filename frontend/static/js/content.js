@@ -395,7 +395,7 @@ let content = {
 content.run()
 
 let viewContent = {
-    currentType: null,
+    // currentType: null,
     currentFolderId: null,
     
     displayItems: function() {  // display all DAD-objects
@@ -564,6 +564,8 @@ let viewContent = {
         objectsList.innerHTML = ''
     },
     openObject: function(event) { // open record or folder or back-folder
+        if (!DragAndDrop.isClick) return
+
         let isDDobject = event.target.closest('.dd-object')
         let isBackFolder = event.target.closest(`.${classNames.backFolder}`)
         if (!(isDDobject || isBackFolder)) return
@@ -578,7 +580,6 @@ let viewContent = {
         }
     },
     openFolder: function(folder_id) {
-        console.log('Открытие папки ', session.section,' типа, id=', folder_id)
         this.currentFolderId = folder_id
         viewContent.removeObjects()
         viewContent.displayItems()
@@ -592,6 +593,7 @@ let viewContent = {
     },
     run: function() {
         this.currentFolderId = content.notesRoot
+        this.removeObjects()
         this.displayItems() // отображение должно подождать завершения ajax запроса контента!!!!!!!
         let ddArea = document.getElementById('objectsList')
         ddArea.addEventListener('click', this.openObject.bind(this))
@@ -677,7 +679,8 @@ let DragAndDrop = {
     },
     stickyDAD: null,  // Drag And Drop HTML Object attached to mouse (pointer)
     
-    // мы будем запомним элемент и четверть в Move-событии для обработки End-события
+    // мы будем запомним элемент и расположение курсора (четверть) 
+    // в Move-событии для обработки End-события
     draggingVariables: {
         "dragRelocate": null, // Элемент, над которым был курсор при перемещении объекта
         "dragRelocateQuarter": null, // четверть, над которым был курсор при перемещении объекта (1 или 4)
@@ -751,15 +754,13 @@ let DragAndDrop = {
             this.DADObject = {
                 "typeObject": `${DADSettings.folderClass}`,
                 "object": folderUnderCursorHTML,
-                "text": 'any folder text'
-                // "text": folderUnderCursorHTML.querySelector(`.folder-content > p`).innerText
+                "text": folderUnderCursorHTML.querySelector(`.folder .title p`).textContent
             }
         } else if (recordUnderCursorHTML) {
             this.DADObject = {
                 "typeObject": `${DADSettings.recordClass}`,
                 "object": recordUnderCursorHTML,
-                "text": 'any record text'
-                // "text": recordUnderCursorHTML.querySelector(`.record-content > p`).innerText
+                "text": recordUnderCursorHTML.querySelector(`.record .title p`).textContent
             }
         } else { // никакой объект под мышкой не найден
             return false
@@ -829,10 +830,10 @@ let DragAndDrop = {
         // document.body.append(this.stickyDAD)
 
     },
-    enableSelected(obj) {  // выделяем перетаскиваемый объект
+    enableSelected(obj) {  // object selection during DAD
         obj.style['background-color'] = 'grey'
     },
-    disableSelected(obj) {  // снимаем выделение с объекта
+    disableSelected(obj) {  // disable object selection during DAD
         obj.style['background-color'] = null
     },
     disableRightButton: function(event) { // disable right btn during DD
@@ -846,7 +847,7 @@ let DragAndDrop = {
     // Mouse MOVE events
     //////////////////////////////////////////////////////////////////////
     pointerMoveEvent: function(event) {  // main movement event
-        
+
         if (this.stickyDAD !== null) {  // attach sticky object to mouse
             let stickyDADCoord = this.getStickyDADCoord(event.clientX, event.clientY) // координаты stickyDAD объекта {x, y}
             this.stickyDAD.style.left = stickyDADCoord.left + "px"
@@ -855,15 +856,17 @@ let DragAndDrop = {
         }
         this.isClick = false // disable transition into the folder during DAD
         if (!this.DADObject.object) return  // Does DAD-object exist?
-    
+
         // Находим элемент, над которым в данный момент находится курсор (папка или запись)
         let elementBelow = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.draggableClass}`)
-    
+        elementBelow = elementBelow?
+            elementBelow:
+            document.elementFromPoint(event.clientX, event.clientY).closest(`.${classNames.backFolder}`)
+
         if (!this.checkDraggingElem(elementBelow)) return  // Does event correct?
-    
         // определяем, в какой зоне (верх, середина, низ) над проносимымы объектом находится курсор
         let relativePosition = this.getRelativePosition(event, elementBelow)
-    
+
         // если под нами папка "вернуться", то элемент нельзя переместить выше нее
         // если папка не будет перечисленная в общем списке, то зоны не имеют значения (будет только "переместить внутрь")
         let backFolder = document.getElementsByClassName('folder-back')[0]
@@ -992,12 +995,16 @@ let DragAndDrop = {
     
         return beforeElement;
     },
-    pointerMoveEventOut: function(event) {
+    pointerMoveEventOut: function(event) {  // finally event since pointerMoveEvent
         // событие перемещения объекта, которое должно сработать в любом случае после pointerMoveEvent
     
         if (!this.DADObject.object) return  // событие move может сработать где угодно. Нас интересуют только DAD события
     
         let elementBelow = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.draggableClass}`)
+        elementBelow = elementBelow?
+            elementBelow:
+            document.elementFromPoint(event.clientX, event.clientY).closest(`.${classNames.backFolder}`)
+
         if (this.leaveObjects.next != elementBelow) {
             this.leaveObjects.previous = this.leaveObjects.next
             this.leaveObjects.next = elementBelow
@@ -1031,16 +1038,16 @@ let DragAndDrop = {
             event.target.closest(`.${DADSettings.recordClass}`)
         this.disableSelected(this.DADObject.object)
         if (elementBelow) {
-            this.disableSelected( elementBelow)
+            this.disableSelected(elementBelow)
         }
     
         if (!this.isClick) {
             if (this.draggingVariables.dragPutInside) {
-                this.putInsideFolder()
+                this.putInsideFolder(elementBelow)
             } else if (this.draggingVariables.dragRelocate) {
                 this.changeOrder()
             } else {
-                console.log("Changes does't exist")
+                // console.log("Changes does't exist")
             }
         }
         
@@ -1077,198 +1084,113 @@ let DragAndDrop = {
     // Симуляция функций для обработки данных
     //////////////////////////////////////////////////////////////////////
     changeOrder: function() {  // put any object between another objects
-        console.log('Поместить рядом (Заглушка)')
-    //     this.changedInterval = this.getChangedInterval()
-    //     if (changedInterval.newOrder == changedInterval.oldOrder) {
-    //         console.log("Object wasn't moved")
-    //         return
-    //     }
-    //     console.log('Поместил рядом с', draggingVariables.dragRelocate)
-    
-    //     // change order by every record/folder
-    //     if (DADObject.typeObject == 'record') {
-    //         let movableRecord = folder_dict[current_folder_id].records.splice(changedInterval.oldOrder-1, 1)[0]
-    //         folder_dict[current_folder_id].records.splice(changedInterval.newOrder-1, 0, movableRecord)
-    //         let changedRecordOrders = []
-    //         let min = Math.min(changedInterval.oldOrder, changedInterval.newOrder)
-    //         let max = Math.max(changedInterval.oldOrder, changedInterval.newOrder)
-    //         for (let i=min-1; i<=max-1; i++) {
-    //             record_dict[folder_dict[current_folder_id].records[i]].order_id = i+1
-    //             changedRecordOrders.push([
-    //                 folder_dict[current_folder_id].records[i], 
-    //                 record_dict[folder_dict[current_folder_id].records[i]].order_id
-    //             ])
-    //         }
-    //         changeRecordsOrders(changedRecordOrders)
-    //     } else if (DADObject.typeObject == 'folder') {
-    //         let movableFolder = folder_dict[current_folder_id].folders.splice(changedInterval.oldOrder-1, 1)[0]
-    //         folder_dict[current_folder_id].folders.splice(changedInterval.newOrder-1, 0, movableFolder)
-    //         let changedRecordOrders = []
-    //         let min = Math.min(changedInterval.oldOrder, changedInterval.newOrder)
-    //         let max = Math.max(changedInterval.oldOrder, changedInterval.newOrder)
-    //         for (let i=min-1; i<=max-1; i++) {
-    //             folder_dict[folder_dict[current_folder_id].folders[i]].info.order_id = i+1
-    //             changedRecordOrders.push([
-    //                 folder_dict[current_folder_id].folders[i], 
-    //                 folder_dict[folder_dict[current_folder_id].folders[i]].info.order_id
-    //             ])
-    //         }
-    //         changeFoldersOrders(changedRecordOrders)
-    //     } else {
-    //         console.log('Error: incorrect type of DADObject.typeObject')
-    //     }
-    //     display_items(folder_dict[current_folder_id].folders, folder_dict[current_folder_id].records)
-    },
-    // getChangedInterval: function() {  // getting new and old order id
-    //     let changedObjects = {
-    //         'type': this.DADObject.typeObject, // folder of record
-    //         'objectList': null, // list of html objects
-    //         'objDict': null, // dictionary of folder/record DB objects
-    //     }
-    //     let changedInterval = {
-    //         'newOrder': null,
-    //         'oldOrder': null,
-    //     }
-    
-    //     // if (session.section === 'notes') {
-    //     //     if (this.DADObject.typeObject == `${DADSettings.folderClass}`) {
-    //     //         changedObjects.objectList = document.getElementsByClassName(DADSettings.folderClass)
-    //     //         // changedObjects.objectList = html_folders.children
-    //     //         changedObjects.objDict = this.content.noteFolders
-    //     //     } else {
-    //     //         changedObjects.objectList = document.getElementsByClassName(DADSettings.recordClass)
-    //     //         // changedObjects.objectList = html_records.children
-    //     //         changedObjects.objDict = this.content.record
-    //     //     }
-    //     // } else {
-    //     //     if (this.DADObject.typeObject == `${DADSettings.folderClass}`) {
-    //     //         changedObjects.objectList = document.getElementsByClassName(DADSettings.folderClass)
-    //     //         // changedObjects.objectList = html_folders.children
-    //     //         changedObjects.objDict = this.content.folderDict
-    //     //     } else {
-    //     //         changedObjects.objectList = document.getElementsByClassName(DADSettings.recordClass)
-    //     //         // changedObjects.objectList = html_records.children
-    //     //         changedObjects.objDict = this.content.record
-    //     //         changedObjects.objDict = record_dict
-    //     //     }
-    //     // }
-    //     if (this.DADObject.typeObject == `${DADSettings.folderClass}`) {
-    //         changedObjects.objectList = document.getElementsByClassName(DADSettings.folderClass)
-    //         // changedObjects.objectList = html_folders.children
-    //         changedObjects.objDict = document.getElementsByClassName(DADSettings.recordClass)
-    //     } else {
-    //         changedObjects.objectList = document.getElementsByClassName(DADSettings.recordClass)
-    //         // changedObjects.objectList = html_records.children
-    //         changedObjects.objDict = this.content.record
-    //         changedObjects.objDict = record_dict
-    //     }
-        
-    
-    //     // finding new order of dragable object
-    //     for (let i=0; i<changedObjects.objectList.length; i++) {
-    //         if (changedObjects.objectList[i].dataset.ddobjectid == DADObject.object.dataset.ddobjectid) {
-    //             // changedObjects.objectID = DADObject.object.dataset.ddobjectid
-    //             changedInterval.oldOrder = changedObjects.type == 'folder'?
-    //                 changedObjects.objDict[DADObject.object.dataset.ddobjectid].info.order_id:
-    //                 changedObjects.objDict[DADObject.object.dataset.ddobjectid].order_id
-    //             changedInterval.newOrder = i+1
-    //             break
-    //         }
-    //     }
-    //     // console.log(`
-    //     //     finded! ID=${DADObject.object.dataset.ddobjectid}, 
-    //     //     oldOrderID=${changedInterval.oldOrder}, 
-    //     //     newOrderID=${changedInterval.newOrder}
-    //     // `)
-    //     return changedInterval
-    // },
-    putInsideFolder: function() {
-        // put object (record or folder) in folder
-        console.log('Поместить внутрь папки (Заглушка)')
-    
-        // console.log('putInsideFolder')
-    
-        // let currentDADObjectID = DADObject.object.dataset.ddobjectid
-        
-        // let elementBelow = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.draggableClass}`)
-        // if (!elementBelow) {
-        //     return
-        // }
-        // if (!elementBelow.classList.contains(DADSettings.folderClass)) {
-        //     return
-        // }
-        // if (!(draggingVariables.dragPutInside && DADObject.object && folder_dict[current_folder_id])) {
-        //     return
-        // }
-        // if (DADObject.typeObject == DADSettings.folderClass &&
-        //     DADObject.object.dataset.ddobjectid == draggingVariables.dragPutInside.dataset.ddobjectid) {
-        //     return // Folder can't relocate inside itself
-        // }
-    
-        // console.log('Поместил в ', draggingVariables.dragPutInside)
-    
-        // let inletFolderID = parseInt(draggingVariables.dragPutInside.dataset.ddobjectid)
-        // let outletFolderID = current_folder_id
-        // let currentOrder = null
-    
-        // // change DAD-object
-        // if (DADObject.typeObject == 'record') {
-        //     let record_id = DADObject.object.dataset.ddobjectid
-        //     currentOrder = record_dict[record_id].order_id
-        //     folder_dict[inletFolderID].records.push(record_id)
-        //     folder_dict[outletFolderID].records.splice(record_dict[record_id].order_id-1, 1)
-        //     record_dict[record_id].parent_id = inletFolderID
-        //     record_dict[record_id].order_id = folder_dict[inletFolderID].records.length
-        //     changeRecordRequest(
-        //         record_id, 
-        //         (record_dict[record_id].parent_id, record_dict[record_id].order_id)
-        //     )
-        // } else if (DADObject.typeObject == 'folder') {
-        //     let folder_id = DADObject.object.dataset.ddobjectid
-        //     currentOrder = folder_dict[folder_id].info.order_id
-        //     folder_dict[inletFolderID].folders.push(folder_id)
-        //     folder_dict[outletFolderID].folders.splice(folder_dict[folder_id].info.order_id-1, 1)
-        //     folder_dict[folder_id].info.parent_id = inletFolderID
-        //     folder_dict[folder_id].info.order_id = folder_dict[inletFolderID].folders.length
-        //     changeFolderRequest(
-        //         folder_id, 
-        //         (folder_dict[folder_id].parent_id, folder_dict[folder_id].order_id)
-        //     )
-        // } else {
-        //     console.log('Error: incorrect type of DADObject.typeObject')
-        //     return
-        // }
-    
-        // // change orders
-        // if (DADObject.typeObject == 'record') {
-        //     let changedRecordOrders = []
-        //     for (let i=currentOrder-1; i<folder_dict[current_folder_id].records.length; i++) {
-        //         record_dict[folder_dict[current_folder_id].records[i]].order_id -= 1
-        //         changedRecordOrders.push([
-        //             folder_dict[current_folder_id].records[i], 
-        //             record_dict[folder_dict[current_folder_id].records[i]].order_id
-        //         ])
-        //     }
-        //     changeRecordsOrders(changedRecordOrders)
-        // } else if (DADObject.typeObject == 'folder') {
-        //     let changedRecordOrders = []
-        //     for (let i=currentOrder-1; i<folder_dict[current_folder_id].folders.length; i++) {
-        //         folder_dict[folder_dict[current_folder_id].folders[i]].info.order_id -= 1
-        //         changedRecordOrders.push([
-        //             folder_dict[current_folder_id].folders[i], 
-        //             folder_dict[folder_dict[current_folder_id].folders[i]].info.order_id
-        //         ])
-        //     }
-        //     changeFoldersOrders(changedRecordOrders)
-        // } else {
-        //     console.log('Error: incorrect type of DADObject.typeObject')
-        //     return
-        // }
-        // display_items(folder_dict[current_folder_id].folders, folder_dict[current_folder_id].records)
-    },
-    
-    
 
+        let objects = this.getProperticeByObjectsList()
+
+        let folder
+        if (session.section === 'notes') {
+            folder = content.noteFolders[viewContent.currentFolderId]
+        } else if (session.section === 'notices') {
+            folder = content.noticeFolders[viewContent.currentFolderId]
+        }
+        folder.records = objects.newRecordList
+        folder.folders = objects.newFolderList
+        folder.info.children = objects.newChildren
+
+        // ajax children
+
+    },
+    getProperticeByObjectsList: function() {  // get folders, records, children using html objectsList
+        let objectsList = document.getElementById('objectsList').children
+        let newFolderList = []
+        let newRecordList = []
+        for (let i=0; i<objectsList.length; i++) {
+            let isFolder = objectsList[i].classList.contains(DADSettings.folderClass)
+            let isRecord = objectsList[i].classList.contains(DADSettings.recordClass)
+            let isBackFolder = objectsList[i].classList.contains(classNames.backFolder)
+            if (isBackFolder) continue
+            if (isFolder) {
+                newFolderList.push('f'+String(objectsList[i].id))
+            } else if (isRecord) {
+                newRecordList.push('n'+String(objectsList[i].id))
+            } else {
+                console.log('DragAndDrop.changeOrder Error')
+            }
+        }
+        let newChildren = newFolderList.join(',') + ',' + newRecordList.join(',')
+        if (newRecordList.length===0) newChildren=newChildren.slice(0,-1)
+        let outlet = {
+            newFolderList: newFolderList,
+            newRecordList: newRecordList, 
+            newChildren: newChildren
+        }
+        return outlet
+    },
+    putInsideFolder: function(elementBelow) { // put object (record or folder) in folder
+   
+        // console.log('records', content.noteFolders[10])
+        // console.log('folders')
+        // console.log('children')
+
+
+        // verifications
+        if (!elementBelow) return
+        if (!elementBelow.classList.contains(DADSettings.folderClass)) return
+        if (!(elementBelow && this.DADObject.object)) return
+        if (this.DADObject.typeObject == DADSettings.folderClass &&
+            this.DADObject.object.id == elementBelow.id) {
+            return // Folder can't relocate inside itself
+        }
+
+        // delete draggable elem from the current folder
+        this.DADObject.object.remove()
+
+        // getting new and old folders
+        let oldFolder = null, newFolder = null
+        if (session.section==='notes') {
+            oldFolder = content.noteFolders[viewContent.currentFolderId]
+            newFolder = content.noteFolders[elementBelow.id]
+        } else if (session.section==='notices') {
+            oldFolder = content.noticeFolders[viewContent.currentFolderId]
+            newFolder = content.noticeFolders[elementBelow.id]
+        }
+
+        // change old folder
+        let objects = this.getProperticeByObjectsList()
+        oldFolder.records = objects.newRecordList
+        oldFolder.folders = objects.newFolderList
+        oldFolder.info.children = objects.newChildren
+
+        // change new folder
+        if (this.DADObject.typeObject==='record') {
+            newFolder.records.push('n'+this.DADObject.object.id)
+        } else if (this.DADObject.typeObject==='folder') {
+            newFolder.folders.push('f'+this.DADObject.object.id)
+        }
+        let newChildren = newFolder.folders.join(',') + ',' + newFolder.records.join(',')
+        if (newFolder.records.length===0) newChildren=newChildren.slice(0,-1)
+        newFolder.info.children = newChildren
+
+        if (session.section === 'notes' && this.DADObject.typeObject === 'record') {
+            content.notes[this.DADObject.object.id].parent_id = elementBelow.id
+            // ajax parent_id
+        } else if (session.section === 'notes' && this.DADObject.typeObject === 'folder') {
+            content.noteFolders[this.DADObject.object.id].info.parent_id = elementBelow.id
+            // ajax parent_id
+        } else if (session.section === 'notices' && this.DADObject.typeObject === 'record') {
+            content.notices[this.DADObject.object.id].parent_id = elementBelow.id
+            // ajax parent_id
+        } else if (session.section === 'notices' && this.DADObject.typeObject === 'folder') {
+            content.noticeFolders[this.DADObject.object.id].info.parent_id = elementBelow.id
+            // ajax parent_id
+        } else {
+            console.log("Error: parent_id hasn't changed")
+        }
+
+        // ajax new children
+        // ajax old children
+        
+    },
     run: function() {
         // Drag And Drop (DAD) events
         let objectsList = document.getElementById('objectsList')
@@ -1281,37 +1203,3 @@ let DragAndDrop = {
     }
 }
 DragAndDrop.run()
-
-
-// let inlet = 'f9,f10,f16,f14,n7,n9,n5,n4,n12,n14,n26,n32,n19,n47'
-// let outlet1 = [9, 10, 16, 14]
-// let outlet2 = [7, 9, 5, 4, 12, 14, 26, 32, 19, 47]
-
-// const getList = function(inlet) {
-//     let lst = inlet.split(',')
-//     out1 = []
-//     out2 = []
-//     for (let i=0; i<lst.length;i++) {
-//         if (lst[i][0]==='f') {
-//             out1.push(Number(lst[i].slice(1)))
-//         } else if (lst[i][0]==='n') {
-//             out2.push(Number(lst[i].slice(1)))
-//         }
-//     }
-//     console.log('out1', out1)
-//     console.log('out2', out2)
-//     return out1, out2
-// }
-
-// const getString = function(out1, out2) {
-//     let outlst = ''
-//     for (let i=0; i<out1.length;i++) {
-//         outlst += 'f'+out1[i]+','
-//     }
-//     for (let i=0; i<out2.length;i++) {
-//         outlst += 'n'+out2[i]+','
-//     }
-//     outlst = outlst.slice(0, -1)
-//     console.log('outlst', outlst)
-//     return outlst
-// }
