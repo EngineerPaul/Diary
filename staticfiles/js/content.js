@@ -55,6 +55,7 @@ let modals = {
             // (event.currentTarget != modalCross) &&
             (event.key != 'Escape')
         ) return
+        if (!this.modal) return
         modalBlock.style['display'] = 'none'
         // console.log('modal', modal)
         console.log('this.modal', this.modal)
@@ -565,7 +566,6 @@ let viewContent = {
     },
     openObject: function(event) { // open record or folder or back-folder
         if (!DragAndDrop.isClick) return
-
         let isDDobject = event.target.closest('.dd-object')
         let isBackFolder = event.target.closest(`.${classNames.backFolder}`)
         if (!(isDDobject || isBackFolder)) return
@@ -704,7 +704,7 @@ let DragAndDrop = {
         let isFolder = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.folderClass}`)
         let isRecord = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.recordClass}`)
         if ((isFolder??isRecord)&&event.which != 3) {
-            isClick = true  // вхождение в папку
+            this.isClick = true  // вхождение в папку
         }
         
         if (!this.pointerDownEventChecks(event)) {  // проверки на срабатывание DAD
@@ -1079,6 +1079,16 @@ let DragAndDrop = {
             variable[key] = null
         }
     },
+    resetDADEvent: function(event) {  // reset all changes without ajax and content
+        if (!this.DADObject.object) return
+        if (event.key != 'Escape') return
+
+        this.disableSelected(this.DADObject.object)
+        this.removeDADMemory()
+
+        viewContent.removeObjects()
+        viewContent.displayItems()
+    },
 
     //////////////////////////////////////////////////////////////////////
     // Симуляция функций для обработки данных
@@ -1200,6 +1210,7 @@ let DragAndDrop = {
         document.addEventListener(`pointermove`, this.pointerMoveEvent.bind(this));  // document, чтобы DADObject скользил вдоль границы DADArea, когда курсор ее покидает  
         document.addEventListener(`pointermove`, this.pointerMoveEventOut.bind(this));  // document, чтобы снятие выделение предыдущего объекта работало корректно
         document.addEventListener(`pointerup`, this.pointerUpEvent.bind(this));
+        document.addEventListener(`keyup`, this.resetDADEvent.bind(this));
     }
 }
 DragAndDrop.run()
