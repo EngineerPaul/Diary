@@ -228,7 +228,7 @@ let content = {
             [34, 'record 1.2.1', 1, 'green', 21],
             [29, 'record 1.3.1', 1, null, 22],
             [17, 'record 2.1', 1, null, 10],
-            [32, 'record 3.1', 1, 'red', 16],
+            [21, 'record 3.1', 1, 'red', 16],
             [55, 'record 3.1.1', 1, 'green', 17],
             [56, 'record 4.1.1', 1, 'yellow', 27],
 
@@ -260,7 +260,7 @@ let content = {
             [36, 'папка 3.1.1.1', 1, null, 34, ''],
             [10, 'папка 2', 2, 'red', 7, 'n17,n18'],
             [21, 'папка 1.2', 2, 'yellow', 9, 'n34,n41'],
-            [16, 'папка 3', 3, 'green', 7, 'f17,n32'],
+            [16, 'папка 3', 3, 'green', 7, 'f17'],
             [22, 'папка 1.3', 3, null, 9, 'n29'],
             [14, 'папка 4', 4, 'yellow', 7, 'f27'],
         ]
@@ -565,7 +565,7 @@ let viewContent = {
         objectsList.innerHTML = ''
     },
     openObject: function(event) { // open record or folder or back-folder
-        if (!DragAndDrop.isClick) return
+        if (mobileSettings.device === 'desktop' && !DragAndDrop.isClick) return
         let isDDobject = event.target.closest('.dd-object')
         let isBackFolder = event.target.closest(`.${classNames.backFolder}`)
         if (!(isDDobject || isBackFolder)) return
@@ -701,6 +701,7 @@ let DragAndDrop = {
     // Mouse PRESS events
     //////////////////////////////////////////////////////////////////////
     pointerDownEvent: function(event) {  // click the draggable object
+        if (mobileSettings.device === 'mobile' && mobileSettings.DAD === false) return // DAD must be true using mobile
         let isFolder = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.folderClass}`)
         let isRecord = document.elementFromPoint(event.clientX, event.clientY).closest(`.${DADSettings.recordClass}`)
         if ((isFolder??isRecord)&&event.which != 3) {
@@ -938,7 +939,7 @@ let DragAndDrop = {
         }
     },
     draggingInsertElement: function(event, elementBelow, relativePosition) {  // inserting between
-        
+
         // Находим элемент, с которым будем меняться местами
         let beforeElement = this.getBeforeElement(event.clientY, elementBelow)
     
@@ -1032,10 +1033,14 @@ let DragAndDrop = {
         if (!this.stickyDAD) {  // если перемещаемый объект не существует
             return
         }
-    
-        let elementBelow = (event.target.closest(`.${DADSettings.folderClass}`)) ?
-            event.target.closest(`.${DADSettings.folderClass}`):
-            event.target.closest(`.${DADSettings.recordClass}`)
+        // let elementBelow = (event.target.closest(`.${DADSettings.folderClass}`)) ?
+        //     event.target.closest(`.${DADSettings.folderClass}`):
+        //     event.target.closest(`.${DADSettings.recordClass}`)
+        // event.target doesn't work using mobile
+        let elementBelow = document.elementFromPoint(event.clientX, event.clientY)
+        elementBelow = elementBelow.closest(`.${DADSettings.folderClass}`) ?
+            elementBelow.closest(`.${DADSettings.folderClass}`):
+            elementBelow.closest(`.${DADSettings.recordClass}`)
         this.disableSelected(this.DADObject.object)
         if (elementBelow) {
             this.disableSelected(elementBelow)
@@ -1137,11 +1142,6 @@ let DragAndDrop = {
         return outlet
     },
     putInsideFolder: function(elementBelow) { // put object (record or folder) in folder
-   
-        // console.log('records', content.noteFolders[10])
-        // console.log('folders')
-        // console.log('children')
-
 
         // verifications
         if (!elementBelow) return
@@ -1214,3 +1214,69 @@ let DragAndDrop = {
     }
 }
 DragAndDrop.run()
+
+let mobileSettings = {
+    timeout: 500, // press time for DAD start
+    device: null, // mobile or desktop
+    DAD: false,  // DAD work sensor
+    holdDown: false,  // press touch for DAD start
+
+    getDeviceType: function() {
+        // https://sky.pro/media/kak-opredelit-tip-ustrojstva-polzovatelya-s-pomoshhyu-javascript/
+        let userAgent = navigator.userAgent.toLowerCase();
+        let isMobile = /mobile|iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(userAgent);
+    
+        if (isMobile) {
+        return "mobile";
+        } else {
+        return "desktop";
+        }
+    },
+    setMobileDADAreaHeight: function() {  // set height of drag-area
+        let heightScreen = window.screen.height
+        let objectsList = document.getElementById('objectsList')
+        let objectsList_y = objectsList.getBoundingClientRect().y
+        objectsList.style['max-height'] = heightScreen-objectsList_y-50 + 'px'
+        // 50px - footer height
+    },
+    pointerDownEvent: function(event) {  // DAD prepare by pointerdown
+        event.preventDefault()
+        this.holdDown = true
+        setTimeout(this.DADStart.bind(this), this.timeout, event) // press 500ms
+    },
+    DADStart: function(event) {  // launch DAD in 0.5s
+        if (!this.holdDown) return  // may be turn off in move and up events
+        this.holdDown = false
+        this.DAD = true
+        DragAndDrop.pointerDownEvent(event) // usual DAD
+    },
+    pointerMoveEvent: function(event) {  // reset options
+        this.holdDown = false
+
+        // pointermove event doesn't disable touchmove
+        // if (this.DAD) event.preventDefault()
+    },
+    pointerUpEvent: function(event) {  // reset options
+        this.holdDown = false
+        this.DAD = false
+    },
+    contexmenuEvent: function(event) {  // contexmenu works disabled
+        if (event.pointerType === 'mouse') return  // mouse contexmenu works 
+        event.preventDefault()
+    },
+    disableTouch: function(event) { // disable touch-action during DAD
+        if (this.DAD) event.preventDefault()
+    },
+    run: function() {
+        this.device = this.getDeviceType()
+        if (this.device != 'mobile') return
+
+        let objectsList = document.getElementById('objectsList')
+        objectsList.addEventListener('pointerdown', this.pointerDownEvent.bind(this))
+        document.addEventListener('pointermove', this.pointerMoveEvent.bind(this))
+        document.addEventListener('pointerup', this.pointerUpEvent.bind(this))
+        document.addEventListener('contextmenu', this.contexmenuEvent.bind(this))
+        document.addEventListener('touchmove', this.disableTouch.bind(this), {passive: false})
+    }
+}
+mobileSettings.run()
