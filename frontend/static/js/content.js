@@ -1220,6 +1220,8 @@ let mobileSettings = {
     device: null, // mobile or desktop
     DAD: false,  // DAD work sensor
     holdDown: false,  // press touch for DAD start
+    scrollId: null,  // setInterval ID
+    scrollStep: 4,  // scroll offset (speed)
 
     getDeviceType: function() {
         // https://sky.pro/media/kak-opredelit-tip-ustrojstva-polzovatelya-s-pomoshhyu-javascript/
@@ -1267,6 +1269,19 @@ let mobileSettings = {
     disableTouch: function(event) { // disable touch-action during DAD
         if (this.DAD) event.preventDefault()
     },
+    DADScrolling: function(event) { // scrolling on the edges of the DAD-area
+        // https://learn.javascript.ru/size-and-scroll-window
+        let ratio = event.clientY/document.documentElement.clientHeight
+        if (!DragAndDrop.DADObject.object) return
+        if (!this.scrollId&&ratio<0.1) {
+            this.scrollId = setInterval(() => window.scrollBy({top:-4, left: 0, behavior: "instant"}), 10)
+        } else if (!this.scrollId&&ratio>0.9) {
+            this.scrollId = setInterval(() => window.scrollBy({top:4, left: 0, behavior: "instant"}), 10)
+        } else if (this.scrollId&&ratio>0.1&&ratio<0.9) {
+            clearInterval(this.scrollId)
+            this.scrollId = null
+        }
+    },
     run: function() {
         this.device = this.getDeviceType()
         if (this.device != 'mobile') return
@@ -1277,6 +1292,7 @@ let mobileSettings = {
         document.addEventListener('pointerup', this.pointerUpEvent.bind(this))
         document.addEventListener('contextmenu', this.contexmenuEvent.bind(this))
         document.addEventListener('touchmove', this.disableTouch.bind(this), {passive: false})
+        document.addEventListener('pointermove', this.DADScrolling.bind(this))
     }
 }
 mobileSettings.run()
