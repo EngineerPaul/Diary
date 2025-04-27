@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views import (
-    HomePage, HelpPage, OtherPage, SettingsPage, SearchPage, NotesPage, NoticesPage
+    HomePage, HelpPage, OtherPage, SettingsPage, SearchPage, 
+    NotesPage, NoticesPage, NotePage, NoticePage
 )
 
 
@@ -13,4 +14,6 @@ urlpatterns = [
     path('searching', SearchPage.as_view(), name='search_url'),
     path('notes', NotesPage.as_view(), name='notes_url'),
     path('notices', NoticesPage.as_view(), name='notices_url'),
+    path('notes/<int:pk>/', NotePage.as_view(), name='note_url'),
+    path('notices/<int:pk>/', NoticePage.as_view(), name='note_url'),
 ]

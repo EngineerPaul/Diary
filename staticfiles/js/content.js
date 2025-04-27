@@ -950,7 +950,7 @@ let DragAndDrop = {
         this.DADObject.object === beforeElement
         ) {
         // Если нет, выходим из функции, чтобы избежать лишних изменений в DOM
-        // resetOptions(draggingVariables)
+        this.resetOptions(this.draggingVariables)
         return;
         }
     

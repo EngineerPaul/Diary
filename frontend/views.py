@@ -21,3 +21,9 @@ class NotesPage(TemplateView):
 
 class NoticesPage(TemplateView):
     template_name = 'frontend/notices.html'
+
+class NotePage(TemplateView):
+    template_name = 'frontend/note.html'
+
+class NoticePage(TemplateView):
+    template_name = 'frontend/notice.html'

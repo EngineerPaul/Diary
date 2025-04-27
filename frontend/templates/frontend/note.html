@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="note-content">
+    <div class="title">
+        <p class="blockName">Theme: </p>
+        <div class="theme">
+            <input type="text" placeholder="Название темы">
+        </div>
+        <div class="setting icon" onclick="viewSettings()">set</div>
+        <div class="cross icon">del</div>
+    </div>
+    <div class="settings" id="settings">
+        <h2>Настройки</h2>
+        Друзья - специальное flex поле, где друзья выглядят в виде блоков-полосок с
+            Именем и крестиком.<br>
+        Настройки (для владельца заметки). Изначально скрытое (сложенное внутрь) 
+            поле. Здесь автор может проставить галочки и изменить разные свойства заметки:
+            <ul>
+                <li>можно ли комментировать запись</li>
+                <li>могут ли другие люди его изменять</li>
+                <li>делается у других людей дубликат или запись общая</li>
+                <li>установить пароль</li>
+                <li>Блок друзей появляется только, если здесь это разрешено.</li>
+                <li>изменить цвет (срочность)</li>
+                <li>кнопка удалить в конце</li>
+                <li>и другие</li>
+            </ul>
+    </div>
+    <div class="content">
+        <div class="record">
+            <div class="record-header">
+                <div class="name">
+                    Комарницкий Павел
+                </div>
+                <p>,&nbsp</p>
+                <div class="date">
+                    25.04.2025 5:49
+                </div>
+                <div class="cross">
+                    X
+                </div>
+            </div>
+            <hr>
+            <div class="record-text">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.
+            </div>
+        </div>
+        <div class="record">
+            <div class="record-header">
+                <div class="name">
+                    Комарницкий Павел
+                </div>
+                <p>,&nbsp</p>
+                <div class="date">
+                    25.04.2025 5:49
+                </div>
+                <div class="cross">
+                    X
+                </div>
+            </div>
+            <hr>
+            <div class="record-text">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.
+            </div>
+        </div>
+        <div class="record">
+            <div class="record-header">
+                <div class="name">
+                    Комарницкий Павел
+                </div>
+                <p>,&nbsp</p>
+                <div class="date">
+                    25.04.2025 5:49
+                </div>
+                <div class="cross">
+                    X
+                </div>
+            </div>
+            <hr>
+            <div class="record-text">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.
+            </div>
+        </div>
+        <div class="images" id="images63">
+            <div class="slide-direction">
+                <div class="rectangle" data-direction="left">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="slider">
+                <div class="image-area">
+                    <div class="image">
+                        <img src="{% static 'img/forTest/1.jpg' %}" alt="" id="image1">
+                    </div>
+                    <div class="image">
+                        <img src="{% static 'img/forTest/2.jpg' %}" alt="" id="image2">
+                    </div>
+                    <div class="image">
+                        <img src="{% static 'img/forTest/3.jpg' %}" alt="" id="image3">
+                    </div>
+                    <div class="image">
+                        <img src="{% static 'img/forTest/4.jpg' %}" alt="" id="image4">
+                    </div>
+                    <div class="image">
+                        <img src="{% static 'img/forTest/5.jpg' %}" alt="" id="image5">
+                    </div>
+                    <div class="image">
+                        <img src="{% static 'img/forTest/6.jpg' %}" alt="" id="image6">
+                    </div>
+                </div>
+                <div class="cross">
+                    X
+                </div>
+            </div>
+            <div class="slide-direction">
+                <div class="rectangle" data-direction="right">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="creation-area">
+        <div class="creation-area-block">
+            <button class="create-button">Добавить заметку</button>
+            <button class="create-button">Добавить картинки</button>
+        </div>
+    </div>
+
+    <div class="margin" style="margin-bottom: 70px;"></div>
+</div>
+
+<script>
+let viewSettings = function() {  // view hidden settings
+    // https://www.w3schools.com/howto/howto_js_accordion.asp
+    let settings = document.getElementById('settings')
+    if (settings.style.maxHeight) {
+        settings.style.maxHeight = null;
+    } else {
+        settings.style.maxHeight = settings.scrollHeight + "px";
+    }
+}
+
+let slider = {
+    shiftLeft: function(slider, imageArea) {  // shift images left
+        let leftSliderBorder = slider.getBoundingClientRect().left
+        let childrenArea = imageArea.children
+        let nextElem = null
+        for (let i=childrenArea.length-1; i >= 0; i--) {
+            if (childrenArea[i].getBoundingClientRect().left < leftSliderBorder) {
+                nextElem = childrenArea[i]
+                break
+            }
+        }
+        if (!nextElem) return
+
+        let leftImageBorder = nextElem.getBoundingClientRect().left
+        let currentShift = imageArea.style.left.slice(0,-2)
+        imageArea.style.left = currentShift - Math.floor(leftImageBorder-leftSliderBorder) + 'px'
+    },
+    shiftRight: function(slider, imageArea) {  // shift images right
+        let rightSliderBorder = slider.getBoundingClientRect().right
+        let childrenArea = imageArea.children
+        let nextElem = null
+        for (let i=0; i < childrenArea.length; i++) {
+            if (childrenArea[i].getBoundingClientRect().right > rightSliderBorder) {
+                nextElem = childrenArea[i]
+                break
+            }
+        }
+        if (!nextElem) return
+
+        let rightImageBorder = nextElem.getBoundingClientRect().right
+        let currentShift = imageArea.style.left.slice(0,-2)
+        imageArea.style.left = currentShift - Math.ceil(rightImageBorder-rightSliderBorder) + 'px'
+    },
+    shiftSlider: function(event) {  // shift images into the slider
+        let shiftButton = event.target.closest('.rectangle')
+        if (!shiftButton) return false
+        let images = shiftButton.closest('.images')
+        let slider = images.querySelector('.slider')
+        let imageArea = images.querySelector('.image-area')
+
+        let direction = shiftButton.dataset['direction']
+        if (direction === 'right') {
+            this.shiftRight(slider, imageArea)
+        } else if (direction === 'left') {
+            this.shiftLeft(slider, imageArea)
+        } else {
+            console.log('Error: getSlider()')
+        }
+    },
+    run: function() {
+        document.addEventListener('click', this.shiftSlider.bind(this))
+    }
+}
+slider.run()
+
+</script>
+{% endblock content %}
