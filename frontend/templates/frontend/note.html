@@ -201,5 +201,166 @@ let slider = {
 }
 slider.run()
 
+let ajax = {
+    auth: null,
+    recordId: null,
+
+    getAuthId: function() {
+        return '1234'
+    },
+    getRecordId: function() {
+        return 1
+    },
+    getRecordInfo: function() { // getting theme, creationDate, settings
+        let blankContent = {
+            theme: 'Theme',
+            creationDate: '25.04.2025 5:40',
+            settings: {},
+        }
+    },
+    getNotes: function() { // getting notes list by record id by date
+        let blankContent = [ // like [[id, creationDate, content], ...]
+            [1, '25.04.2025 5:49', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [2, '25.04.2025 5:51', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [3, '25.04.2025 5:53', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [4, '25.04.2025 5:57', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [5, '25.04.2025 5:59', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+        ]
+        return blankContent
+    },
+    getImages: function() { // getting images list by record id by date
+        // everything needs to be rewritten
+        let blankImages = [ // like [[groupId, creationDate, [[imgId, src], ...]], ...]
+            [
+                1, '25.04.2025 5:52', [
+                    [1, "{% static 'img/forTest/1.jpg' %}"], 
+                    [2, "{% static 'img/forTest/2.jpg' %}"], 
+                    [3, "{% static 'img/forTest/3.jpg' %}"], 
+                    [4, "{% static 'img/forTest/4.jpg' %}"], 
+                    [5, "{% static 'img/forTest/5.jpg' %}"], 
+                    [6, "{% static 'img/forTest/6.jpg' %}"], 
+                ],
+            ],
+            [
+                2, '25.04.2025 5:58', [
+                    [7, "{% static 'img/forTest/1.jpg' %}"], 
+                    [8, "{% static 'img/forTest/2.jpg' %}"], 
+                    [9, "{% static 'img/forTest/3.jpg' %}"], 
+                    [10, "{% static 'img/forTest/4.jpg' %}"], 
+                    [11, "{% static 'img/forTest/5.jpg' %}"], 
+                    [12, "{% static 'img/forTest/6.jpg' %}"], 
+                ],
+            ]
+        ]
+        return blankImages
+    },
+    updateNote: function(noteId) { // change any comment
+
+    },
+    updateRecord: function() { // change record (settings and theme)
+
+    },
+    delNote: function(noteId) { // delete any note
+
+    },
+    delImages: function(imagesId) { // delete any images group
+
+    },
+    delRecord: function() { // delete whole record with all notes and images
+
+    },
+    run: function() {
+        this.auth = this.getAuthId()
+        this.recordId = this.getRecordId()
+    }
+}
+ajax.run()
+
+let content = {
+    theme: null,
+    content: [], // all content ids like [{type, id}, ...]
+    notes: {}, // notes objs like {id: {creationDate: any, content: any}, ...}
+    images: {}, // images objs like {id: {creationDate: any, images: [src, ...]}, ...}
+    imagesGroups: {}, // images groups like {groupId: {date: date, images:[...imagesId]}, ...}
+
+    Note: function(noteId, date, content) { // create note object using
+        this.Id = noteId //num
+        this.date = date //str
+        this.content = content //str
+    },
+    Image: function(imageId, path) { // create image object using
+        this.Id = imageId
+        this.path = path
+    },
+    ImagesGroup: function(imagesGroupId, date, images) { // create images group like Note
+        this.id = imagesGroupId //num
+        this.date = date //str
+        this.content = images //list of num ids
+    },
+    getContent: function() {
+        let rawNotes = ajax.getNotes()
+        for (let i=0; i<rawNotes.length; i++) {
+            this.notes[rawNotes[i][0]] = new this.Note(...rawNotes[i])
+        }
+
+        let rawImages = ajax.getImages()
+        for (let igi=0; igi<rawImages.length; igi++) {
+            let idList = []
+            for (let i=0; i<rawImages[igi][2].length; i++) {
+                this.images[rawImages[igi][2][i][0]] = new this.Image(...rawImages[igi][2][i])
+                idList.push(rawImages[igi][2][i][0])
+            }
+            this.imagesGroups[rawImages[igi][0]] = new this.ImagesGroup(rawImages[igi][0], rawImages[igi][1], idList)
+        }
+        
+        // сделать нормальную сортировку по дате
+        // let noteKeys = Object.keys(this.notes)
+        // let imagesGroupsKeys = Object.keys(this.imagesGroups)
+        // let ni = 0 
+        // let igi = 0
+        // for (let i=0; i<this.notes.length+this.imagesGroups.length; i++) {
+
+        //     let noteKey = noteKeys[ni]?
+        //         noteKeys[ni]:
+        //         null
+        //     let groupKey = imagesGroupsKeys[igi]?
+        //         imagesGroupsKeys[igi]:
+        //         null
+
+        //     if (this.notes[noteKey] && this.imagesGroups[groupKey]) {
+        //         if (this.notes[noteKey].date > this.notes[noteKey].date) {
+        //             this.content.push({'type': 'notes', 'id': this.notes[noteKey].id})
+        //             ni += 1
+        //         } else {
+        //             this.content.push({'type': 'imagesGroups', 'id': this.imagesGroups[groupKey].id})
+        //             igi += 1
+        //         }
+        //     } else {
+        //         if (this.notes[noteKey]) {
+        //             this.content.push({'type': 'notes', 'id': this.notes[noteKey].id})
+        //             ni += 1
+        //         } else if (this.imagesGroups[groupKey]) {
+        //             this.content.push({'type': 'imagesGroups', 'id': this.imagesGroups[groupKey].id})
+        //             igi += 1
+        //         } else {
+        //             // the both don't exist
+        //         }
+        //     }
+        // }
+
+        for (key in this.notes) {
+            this.content.push({'type': 'notes', 'id': key})
+        }
+        for (key in this.imagesGroups) {
+            this.content.push({'type': 'imagesGroups', 'id': key})
+        }
+    },
+    run: function() {
+        this.getContent()
+        console.log(this.content)
+    }
+}
+content.run()
+
 </script>
 {% endblock content %}
