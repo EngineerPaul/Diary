@@ -29,7 +29,7 @@
             </ul>
     </div>
     <div class="content" id="content">
-        <div class="record">
+        <!-- <div class="record">
             <div class="record-header">
                 <div class="name">
                     Комарницкий Павел
@@ -123,7 +123,7 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="creation-area">
         <div class="creation-area-block">
@@ -220,11 +220,11 @@ let ajax = {
     },
     getNotes: function() { // getting notes list by record id by date
         let blankContent = [ // like [[id, creationDate, content], ...]
-            [1, 'Комарницкий Павел', '25.04.2025 5:49', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [2, 'Комарницкий Павел', '25.04.2025 5:51', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [3, 'Комарницкий Павел', '25.04.2025 5:53', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [4, 'Комарницкий Павел', '25.04.2025 5:57', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [5, 'Комарницкий Павел', '25.04.2025 5:59', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [1, 'Комарницкий Павел', '2025-05-01T06:30:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [2, 'Комарницкий Павел', '2025-05-01T06:35:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [3, 'Комарницкий Павел', '2025-05-01T06:40:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [4, 'Комарницкий Павел', '2025-05-01T06:45:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [5, 'Комарницкий Павел', '2025-05-01T06:50:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
         ]
         return blankContent
     },
@@ -232,7 +232,7 @@ let ajax = {
         // everything needs to be rewritten
         let blankImages = [ // like [[groupId, creationDate, [[imgId, src], ...]], ...]
             [
-                1, 'Комарницкий Павел', '25.04.2025 5:52', [
+                1, 'Комарницкий Павел', '2025-05-01T06:33:00.243Z', [
                     [1, "{% static 'img/forTest/1.jpg' %}"], 
                     [2, "{% static 'img/forTest/2.jpg' %}"], 
                     [3, "{% static 'img/forTest/3.jpg' %}"], 
@@ -242,7 +242,7 @@ let ajax = {
                 ],
             ],
             [
-                2, 'Комарницкий Павел', '25.04.2025 5:58', [
+                2, 'Комарницкий Павел', '2025-05-01T06:48:00.243Z', [
                     [7, "{% static 'img/forTest/1.jpg' %}"], 
                     [8, "{% static 'img/forTest/2.jpg' %}"], 
                     [9, "{% static 'img/forTest/3.jpg' %}"], 
@@ -254,6 +254,8 @@ let ajax = {
         ]
         return blankImages
     },
+
+    // blanks
     updateNote: function(noteId) { // change any comment
 
     },
@@ -284,19 +286,19 @@ let content = {
     imagesGroups: {}, // images groups like {groupId: this.ImagesGroup, ...}
 
     Note: function(noteId, author, date, content) { // create note object using
-        this.Id = noteId //num
+        this.id = noteId //num
         this.author = author
-        this.date = date //str
+        this.date = new Date(date) //str
         this.content = content //str
     },
     Image: function(imageId, path) { // create image object using
-        this.Id = imageId
+        this.id = imageId
         this.path = path
     },
     ImagesGroup: function(imagesGroupId, author, date, images) { // create images group like Note
         this.id = imagesGroupId //num
         this.author = author
-        this.date = date //str
+        this.date = new Date(date) //str
         this.content = images //list of numeric ids
     },
     getContent: function() {
@@ -316,48 +318,38 @@ let content = {
                 rawImages[igi][0], rawImages[igi][1], rawImages[igi][2], idList)
         }
         
-        // a = `
-        // сделать нормальную сортировку по дате
-        // let noteKeys = Object.keys(this.notes)
-        // let imagesGroupsKeys = Object.keys(this.imagesGroups)
-        // let ni = 0 
-        // let igi = 0
-        // for (let i=0; i<this.notes.length+this.imagesGroups.length; i++) {
+        let noteKeys = Object.keys(this.notes)
+        let imagesGroupsKeys = Object.keys(this.imagesGroups)
+        let ni = 0 
+        let igi = 0
+        for (let i=0; i<Object.keys(this.notes).length+Object.keys(this.imagesGroups).length; i++) {
 
-        //     let noteKey = noteKeys[ni]?
-        //         noteKeys[ni]:
-        //         null
-        //     let groupKey = imagesGroupsKeys[igi]?
-        //         imagesGroupsKeys[igi]:
-        //         null
+            let noteKey = noteKeys[ni]?
+                noteKeys[ni]:
+                null
+            let groupKey = imagesGroupsKeys[igi]?
+                imagesGroupsKeys[igi]:
+                null
 
-        //     if (this.notes[noteKey] && this.imagesGroups[groupKey]) {
-        //         if (this.notes[noteKey].date > this.notes[noteKey].date) {
-        //             this.content.push({'type': 'notes', 'id': this.notes[noteKey].id})
-        //             ni += 1
-        //         } else {
-        //             this.content.push({'type': 'imagesGroups', 'id': this.imagesGroups[groupKey].id})
-        //             igi += 1
-        //         }
-        //     } else {
-        //         if (this.notes[noteKey]) {
-        //             this.content.push({'type': 'notes', 'id': this.notes[noteKey].id})
-        //             ni += 1
-        //         } else if (this.imagesGroups[groupKey]) {
-        //             this.content.push({'type': 'imagesGroups', 'id': this.imagesGroups[groupKey].id})
-        //             igi += 1
-        //         } else {
-        //             // the both don't exist
-        //         }
-        //     }
-        // }
-        //`
-
-        for (key in this.notes) {
-            this.content.push({'type': 'note', 'id': key})
-        }
-        for (key in this.imagesGroups) {
-            this.content.push({'type': 'imagesGroup', 'id': key})
+            if (this.notes[noteKey] && this.imagesGroups[groupKey]) {
+                if (this.notes[noteKey].date.getTime() < this.imagesGroups[groupKey].date.getTime()) {
+                    this.content.push({'type': 'note', 'id': this.notes[noteKey].id})
+                    ni += 1
+                } else {
+                    this.content.push({'type': 'imagesGroup', 'id': this.imagesGroups[groupKey].id})
+                    igi += 1
+                }
+            } else {
+                if (this.notes[noteKey]) {
+                    this.content.push({'type': 'note', 'id': this.notes[noteKey].id})
+                    ni += 1
+                } else if (this.imagesGroups[groupKey]) {
+                    this.content.push({'type': 'imagesGroup', 'id': this.imagesGroups[groupKey].id})
+                    igi += 1
+                } else {
+                    console.log('Error: the both doesnt exist')
+                }
+            }
         }
     },
     viewContent: function() {
@@ -370,7 +362,6 @@ let content = {
                 console.log('Error: content type is incorrect')
             }
         }
-        console.log(this.content)
     },
     viewNote: function(noteId) {
         let content = document.getElementById('content')
@@ -533,10 +524,20 @@ let content = {
     run: function() {
         this.getContent()
         this.viewContent()
-
     }
 }
 content.run()
+
+
+// let now1 = new Date()
+// for (let i=0; i<10000; i++) {}
+// let now2 = new Date()
+// console.log('comparison', now1 == now2)
+// let nowJSON = now.toJSON()
+// let nowFromJSON = new Date(nowJSON)
+// console.log('now', now)
+// console.log('nowJSON', nowJSON)
+// console.log('nowFromJSON', nowFromJSON)
 
 </script>
 {% endblock content %}
