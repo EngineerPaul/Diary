@@ -28,7 +28,7 @@
                 <li>и другие</li>
             </ul>
     </div>
-    <div class="content">
+    <div class="content" id="content">
         <div class="record">
             <div class="record-header">
                 <div class="name">
@@ -220,11 +220,11 @@ let ajax = {
     },
     getNotes: function() { // getting notes list by record id by date
         let blankContent = [ // like [[id, creationDate, content], ...]
-            [1, '25.04.2025 5:49', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [2, '25.04.2025 5:51', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [3, '25.04.2025 5:53', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [4, '25.04.2025 5:57', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [5, '25.04.2025 5:59', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [1, 'Комарницкий Павел', '25.04.2025 5:49', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [2, 'Комарницкий Павел', '25.04.2025 5:51', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [3, 'Комарницкий Павел', '25.04.2025 5:53', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [4, 'Комарницкий Павел', '25.04.2025 5:57', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [5, 'Комарницкий Павел', '25.04.2025 5:59', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
         ]
         return blankContent
     },
@@ -232,7 +232,7 @@ let ajax = {
         // everything needs to be rewritten
         let blankImages = [ // like [[groupId, creationDate, [[imgId, src], ...]], ...]
             [
-                1, '25.04.2025 5:52', [
+                1, 'Комарницкий Павел', '25.04.2025 5:52', [
                     [1, "{% static 'img/forTest/1.jpg' %}"], 
                     [2, "{% static 'img/forTest/2.jpg' %}"], 
                     [3, "{% static 'img/forTest/3.jpg' %}"], 
@@ -242,7 +242,7 @@ let ajax = {
                 ],
             ],
             [
-                2, '25.04.2025 5:58', [
+                2, 'Комарницкий Павел', '25.04.2025 5:58', [
                     [7, "{% static 'img/forTest/1.jpg' %}"], 
                     [8, "{% static 'img/forTest/2.jpg' %}"], 
                     [9, "{% static 'img/forTest/3.jpg' %}"], 
@@ -278,13 +278,14 @@ ajax.run()
 
 let content = {
     theme: null,
-    content: [], // all content ids like [{type, id}, ...]
-    notes: {}, // notes objs like {id: {creationDate: any, content: any}, ...}
-    images: {}, // images objs like {id: {creationDate: any, images: [src, ...]}, ...}
-    imagesGroups: {}, // images groups like {groupId: {date: date, images:[...imagesId]}, ...}
+    content: [], // all content ids like [{type, id}, ...]. Type is note or imagesGroup
+    notes: {}, // notes objs like {id: this.Note, ...}
+    images: {}, // images objs like {id: this.Image, ...}
+    imagesGroups: {}, // images groups like {groupId: this.ImagesGroup, ...}
 
-    Note: function(noteId, date, content) { // create note object using
+    Note: function(noteId, author, date, content) { // create note object using
         this.Id = noteId //num
+        this.author = author
         this.date = date //str
         this.content = content //str
     },
@@ -292,10 +293,11 @@ let content = {
         this.Id = imageId
         this.path = path
     },
-    ImagesGroup: function(imagesGroupId, date, images) { // create images group like Note
+    ImagesGroup: function(imagesGroupId, author, date, images) { // create images group like Note
         this.id = imagesGroupId //num
+        this.author = author
         this.date = date //str
-        this.content = images //list of num ids
+        this.content = images //list of numeric ids
     },
     getContent: function() {
         let rawNotes = ajax.getNotes()
@@ -306,13 +308,15 @@ let content = {
         let rawImages = ajax.getImages()
         for (let igi=0; igi<rawImages.length; igi++) {
             let idList = []
-            for (let i=0; i<rawImages[igi][2].length; i++) {
-                this.images[rawImages[igi][2][i][0]] = new this.Image(...rawImages[igi][2][i])
-                idList.push(rawImages[igi][2][i][0])
+            for (let i=0; i<rawImages[igi][3].length; i++) {
+                this.images[rawImages[igi][3][i][0]] = new this.Image(...rawImages[igi][3][i])
+                idList.push(rawImages[igi][3][i][0])
             }
-            this.imagesGroups[rawImages[igi][0]] = new this.ImagesGroup(rawImages[igi][0], rawImages[igi][1], idList)
+            this.imagesGroups[rawImages[igi][0]] = new this.ImagesGroup(
+                rawImages[igi][0], rawImages[igi][1], rawImages[igi][2], idList)
         }
         
+        // a = `
         // сделать нормальную сортировку по дате
         // let noteKeys = Object.keys(this.notes)
         // let imagesGroupsKeys = Object.keys(this.imagesGroups)
@@ -347,17 +351,189 @@ let content = {
         //         }
         //     }
         // }
+        //`
 
         for (key in this.notes) {
-            this.content.push({'type': 'notes', 'id': key})
+            this.content.push({'type': 'note', 'id': key})
         }
         for (key in this.imagesGroups) {
-            this.content.push({'type': 'imagesGroups', 'id': key})
+            this.content.push({'type': 'imagesGroup', 'id': key})
         }
+    },
+    viewContent: function() {
+        for (let i=0; i<this.content.length; i++) {
+            if (this.content[i].type === 'note') {
+                this.viewNote(this.content[i].id)
+            } else if (this.content[i].type === 'imagesGroup') {
+                this.viewImages(this.content[i].id)
+            } else {
+                console.log('Error: content type is incorrect')
+            }
+        }
+        console.log(this.content)
+    },
+    viewNote: function(noteId) {
+        let content = document.getElementById('content')
+        let record = this.createElement(
+            tag = 'div',
+            classList = ['record'],
+            parent = content,
+            params = {id: noteId, },
+        )
+        let recordHeader = this.createElement(
+            tag = 'div',
+            classList = ['record-header'],
+            parent = record,
+            params = {},
+        )
+        let name = this.createElement(
+            tag = 'div',
+            classList = ['name'],
+            parent = recordHeader,
+            params = {textContent: this.notes[noteId].author},
+        )
+        let space = this.createElement(
+            tag = 'p',
+            classList = [],
+            parent = recordHeader,
+            params = {innerHTML: ',&nbsp'},
+        )
+        let date = this.createElement(
+            tag = 'div',
+            classList = ['date'],
+            parent = recordHeader,
+            params = {textContent: this.notes[noteId].date},
+        )
+        let cross = this.createElement(
+            tag = 'div',
+            classList = ['cross'],
+            parent = recordHeader,
+            params = {textContent: 'X'},
+        )
+        let hr = this.createElement(
+            tag = 'hr',
+            classList = [],
+            parent = record,
+            params = {},
+        )
+        let recordText = this.createElement(
+            tag = 'div',
+            classList = ['record-text'],
+            parent = record,
+            params = {textContent: this.notes[noteId].content},
+        )
+    },
+    viewImages: function(groupId) {
+        let content = document.getElementById('content')
+        let images = this.createElement(
+            tag = 'div',
+            classList = ['images'],
+            parent = content,
+            params = {id: groupId, },
+        )
+
+        let sliderDirecrionLeft = this.createElement(
+            tag = 'div',
+            classList = ['slide-direction'],
+            parent = images,
+            params = {},
+        )
+        let rectangleLeft = this.createElement(
+            tag = 'div',
+            classList = ['rectangle'],
+            parent = sliderDirecrionLeft,
+            params = {}, 
+        )
+        rectangleLeft['dataset']['direction'] = 'left'
+        let svgLeft = this.createSVG(
+            parent=rectangleLeft,
+            className='',
+            viewBox='0 0 24 24',
+            pathLst=['M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z',]
+        )
+
+        let slider = this.createElement(
+            tag = 'div',
+            classList = ['slider'],
+            parent = images,
+            params = {},
+        )
+        let imageArea = this.createElement(
+            tag = 'div',
+            classList = ['image-area'],
+            parent = slider,
+            params = {},
+        )
+        let imagesList = this.imagesGroups[groupId].content
+        for (let i=0; i<imagesList.length; i++) {
+            let image = this.createElement(
+                tag = 'div',
+                classList = ['image'],
+                parent = imageArea,
+                params = {},
+            )
+                let img = this.createElement(
+                tag = 'img',
+                classList = [],
+                parent = image,
+                params = {src: this.images[imagesList[i]].path, id:imagesList[i]},
+            )
+        }
+        let cross = this.createElement(
+            tag = 'div',
+            classList = ['cross'],
+            parent = slider,
+            params = {textContent: 'X'},
+        )
+
+        let sliderDirecrionRight = this.createElement(
+            tag = 'div',
+            classList = ['slide-direction'],
+            parent = images,
+            params = {},
+        )
+        let rectangleRight = this.createElement(
+            tag = 'div',
+            classList = ['rectangle'],
+            parent = sliderDirecrionRight,
+            params = {},
+        )
+        rectangleRight.dataset['direction'] = 'right'
+        let svgRight = this.createSVG(
+            parent=rectangleRight,
+            className='',
+            viewBox='0 0 24 24',
+            pathLst=['M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z',]
+        )
+    },
+    createElement: function(tag, classList, parent, params) {
+        let element = document.createElement(tag)
+        for (let i=0; i<classList.length; i++) {
+            element.classList.add(classList[i])
+        }
+        for (let param of Object.keys(params)) {
+            element[param] = params[param]
+        }
+        parent.appendChild(element)
+        return element
+    },
+    createSVG: function(parent, className, viewBox, pathLst) {
+        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        svg.setAttributeNS(null, 'class', className)
+        svg.setAttributeNS(null, 'viewBox', viewBox)
+        for (let i=0; i < pathLst.length; i++) {
+            let svgPath = document.createElementNS("http://www.w3.org/2000/svg", 'path')
+            svgPath.setAttributeNS(null, 'd', pathLst[i])
+            svg.appendChild(svgPath)
+        }
+        parent.append(svg)
+        return svg
+        // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js    
     },
     run: function() {
         this.getContent()
-        console.log(this.content)
+        this.viewContent()
+
     }
 }
 content.run()
