@@ -8,25 +8,65 @@
         <div class="theme">
             <input type="text" placeholder="Название темы">
         </div>
-        <div class="setting icon" onclick="viewSettings()">set</div>
-        <div class="cross icon">del</div>
+        <div class="setting icon" onclick="settings.viewSettings()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z"/>
+                <path d="M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.705,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.447.258a3,3,0,0,0,3-5.2Zm-2.548-3.776a7.048,7.048,0,0,1,0,3.75,1,1,0,0,0,.464,1.133l1.084.626a1,1,0,0,1-1,1.733l-1.086-.628a1,1,0,0,0-1.215.165,6.984,6.984,0,0,1-3.243,1.875,1,1,0,0,0-.751.969V21a1,1,0,0,1-2,0V19.748a1,1,0,0,0-.751-.969A6.984,6.984,0,0,1,7.006,16.9a1,1,0,0,0-1.215-.165l-1.084.627a1,1,0,1,1-1-1.732l1.084-.626a1,1,0,0,0,.464-1.133,7.048,7.048,0,0,1,0-3.75A1,1,0,0,0,4.79,8.992L3.706,8.366a1,1,0,0,1,1-1.733l1.086.628A1,1,0,0,0,7.006,7.1a6.984,6.984,0,0,1,3.243-1.875A1,1,0,0,0,11,4.252V3a1,1,0,0,1,2,0V4.252a1,1,0,0,0,.751.969A6.984,6.984,0,0,1,16.994,7.1a1,1,0,0,0,1.215.165l1.084-.627a1,1,0,1,1,1,1.732l-1.084.626A1,1,0,0,0,18.746,10.125Z"/>
+            </svg>
+        </div>
     </div>
     <div class="settings" id="settings">
-        <h2>Настройки</h2>
-        Друзья - специальное flex поле, где друзья выглядят в виде блоков-полосок с
-            Именем и крестиком.<br>
-        Настройки (для владельца заметки). Изначально скрытое (сложенное внутрь) 
-            поле. Здесь автор может проставить галочки и изменить разные свойства заметки:
-            <ul>
-                <li>можно ли комментировать запись</li>
-                <li>могут ли другие люди его изменять</li>
-                <li>делается у других людей дубликат или запись общая</li>
-                <li>установить пароль</li>
-                <li>Блок друзей появляется только, если здесь это разрешено.</li>
-                <li>изменить цвет (срочность)</li>
-                <li>кнопка удалить в конце</li>
-                <li>и другие</li>
-            </ul>
+        <h4>Настройки</h4>
+        <div class="site site-friends">
+            <p class="settings-property">Список друзей:</p>
+            <div class="friends-row">
+                <div class="friends-area" id="friendsArea">
+                </div>
+                <svg class="add-friend" viewBox="0 0 24 24" id="addFriendBtn" data-modalname="addFriendModal">
+                    <path d="m12 0a12 12 0 1 0 12 12 12.013 12.013 0 0 0 -12-12zm4 13h-3v3a1 1 0 0 1 -2 0v-3h-3a1 1 0 0 1 0-2h3v-3a1 1 0 0 1 2 0v3h3a1 1 0 0 1 0 2z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="site site-comments">
+            <p class="settings-property">Можно ли друзьям комментировать запись:</p>
+            <label class="switch" id="friendCommentsBtn">
+                <input type="checkbox" onclick="settings.otherSite.toggleFriendsCommtents()">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="site site-setpassword" id="setPasswordSite">
+            <p class="settings-property">Установить пароль: </p>
+            <input type="text" class="input password-input" id="passwordInput">
+            <button class="password-btn btn-default" id="setPasswordSiteBtn">Применить</button>
+        </div>
+        <div class="site site-delpassword" id="delPasswordSite">
+            <p class="settings-property">Пароль установлен!</p>
+            <button class="password-btn btn-default btn-danger" id="delPasswordSiteBtn">Удалить</button>
+        </div>
+        <div class="site site-markers">
+            <div class="settings-property">Изменить цвет:</div>
+            <div class="form-marker">
+                <label>
+                    <input type="radio" name="marker" checked>
+                    <div class="marker" data-color="none" ></div>
+                </label>
+                <label>
+                    <input type="radio" name="marker">
+                    <div class="marker" data-color="green"></div>
+                </label>
+                <label>
+                    <input type="radio" name="marker">
+                    <div class="marker" data-color="yellow"></div>
+                </label>
+                <label>
+                    <input type="radio" name="marker">
+                    <div class="marker" data-color="red"></div>
+                </label>
+            </div>
+        </div>
+        <div class="site site-delete">
+            <button class="btn-default btn-danger" id="deleteRecordBtn">Удалить запись</button>
+        </div>
     </div>
     <div class="content" id="content">
         <!-- <div class="record">
@@ -132,20 +172,133 @@
         </div>
     </div>
 
+    <div class="modal-block modal-note-content" id="modalBlock">
+        <div class="global-shadow" id="globalShadow">
+
+            <div class="modal-cart addFriend-cart" id="addFriendModal">
+                <div class="modal-cart-header">
+                    <div class="modal-title">
+                        <p>Добавление друга</p>
+                    </div>
+                    <div class="modal-header-right">
+                        <div class="modal-cross" id="modalCross">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" xml:space="preserve">
+                                <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="modal-cart-content modal-create">
+                    <p>Введите имя:</p>
+                    <div class="friendName">
+                        <input id="friendNameInput" class="input" type="text" placeholder="" value=""/>
+                    </div>
+                    <div id="namesDropdown" class="dropdown-content">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-cart fcomments-cart" id="friendCommentsModal">
+                <div class="modal-cart-header">
+                    <div class="modal-title">
+                        <p>Отключение заметок друзей</p>
+                    </div>
+                    <div class="modal-header-right">
+                        <div class="modal-cross" id="modalCross">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" xml:space="preserve">
+                                <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="modal-cart-content">
+                    <p>Заметки друзей будут удалены</p>
+                    <div class="buttons-row">
+                        <button class="btn-default" id="disableCommentsBtn">Применить</button>
+                        <button class="btn-default btn-danger" id="disableCommentsCanselBtn">Отмена</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-cart password-cart" id="crPasswordModal">
+                <div class="modal-cart-header">
+                    <div class="modal-title">
+                        <p>Создание пароля</p>
+                    </div>
+                    <div class="modal-header-right">
+                        <div class="modal-cross" id="modalCross">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" xml:space="preserve">
+                                <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="modal-cart-content">
+                    <p>В случае утери пороля данные восстановить будет невозможно</p>
+                    <div class="buttons-row">
+                        <button class="btn-default" id="setPasswordBtn">Продолжить</button>
+                        <button class="btn-default" id="setPasswordCanselBtn">Отмена</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-cart password-cart" id="delPasswordModal">
+                <div class="modal-cart-header">
+                    <div class="modal-title">
+                        <p>Удаление пароля</p>
+                    </div>
+                    <div class="modal-header-right">
+                        <div class="modal-cross" id="modalCross">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" xml:space="preserve">
+                                <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="modal-cart-content">
+                    <p>Введите пароль:</p>
+                    <input type="text" class="input" id="delPasswordInput">
+                    <div class="buttons-row">
+                        <button class="btn-default btn-danger" id="delPasswordBtn">Удалить</button>
+                        <button class="btn-default" id="delPasswordCanselBtn">Отмена</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-cart delete-cart" id="deleteRecordModal">
+                <div class="modal-cart-header">
+                    <div class="modal-title">
+                        <p>Удаление заметки</p>
+                    </div>
+                    <div class="modal-header-right">
+                        <div class="modal-cross" id="modalCross">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512.021 512.021" xml:space="preserve">
+                                <path d="M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="modal-cart-content">
+                    <p>Удалить заметку?</p>
+                    <div class="buttons-row">
+                        <button class="btn-default btn-danger" id="delRecordBtn">Удалить</button>
+                        <button class="btn-default" id="delRecordCanselBtn">Отмена</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <div class="margin" style="margin-bottom: 70px;"></div>
 </div>
 
-<script>
-let viewSettings = function() {  // view hidden settings
-    // https://www.w3schools.com/howto/howto_js_accordion.asp
-    let settings = document.getElementById('settings')
-    if (settings.style.maxHeight) {
-        settings.style.maxHeight = null;
-    } else {
-        settings.style.maxHeight = settings.scrollHeight + "px";
-    }
-}
 
+<script>
 let slider = {
     shiftLeft: function(slider, imageArea) {  // shift images left
         let leftSliderBorder = slider.getBoundingClientRect().left
@@ -202,8 +355,8 @@ let slider = {
 slider.run()
 
 let ajax = {
-    auth: null,
-    recordId: null,
+    authId: null, // id for authenticate
+    recordId: null, // id of whole record
 
     getAuthId: function() {
         return '1234'
@@ -220,11 +373,11 @@ let ajax = {
     },
     getNotes: function() { // getting notes list by record id by date
         let blankContent = [ // like [[id, creationDate, content], ...]
-            [1, 'Комарницкий Павел', '2025-05-01T06:30:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [2, 'Комарницкий Павел', '2025-05-01T06:35:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [3, 'Комарницкий Павел', '2025-05-01T06:40:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [4, 'Комарницкий Павел', '2025-05-01T06:45:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
-            [5, 'Комарницкий Павел', '2025-05-01T06:50:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [2, 'Комарницкий Павел', '2025-05-01T06:30:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [4, 'Комарницкий Павел', '2025-05-01T06:35:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [6, 'Комарницкий Павел', '2025-05-01T06:40:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [8, 'Комарницкий Павел', '2025-05-01T06:45:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
+            [11, 'Комарницкий Павел', '2025-05-01T06:50:00.243Z', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in semper nisi. Morbi eu purus sed nibh blandit maximus vel ac orci. Integer auctor est et lorem dapibus dapibus. Praesent sollicitudin mauris in metus facilisis, eu facilisis mauris congue. Curabitur molestie sem ligula, id interdum leo euismod nec. Suspendisse ullamcorper diam eros, non aliquam libero porta non. Fusce gravida auctor quam, quis volutpat libero aliquet id. Praesent lobortis risus vitae velit sodales maximus. Vivamus mollis sed tortor sit amet pretium. Duis aliquam enim eleifend purus mollis pharetra. Praesent nibh massa, viverra iaculis imperdiet id, aliquet vitae augue. In dapibus, felis vitae volutpat aliquet, ex lacus efficitur odio, a venenatis nulla arcu et est. Suspendisse placerat nisl quis nisi iaculis, sit amet accumsan erat venenatis. Quisque lorem lorem, porttitor eget scelerisque in, vulputate in orci. Vivamus maximus volutpat velit, nec tincidunt tellus posuere faucibus.'],
         ]
         return blankContent
     },
@@ -232,7 +385,7 @@ let ajax = {
         // everything needs to be rewritten
         let blankImages = [ // like [[groupId, creationDate, [[imgId, src], ...]], ...]
             [
-                1, 'Комарницкий Павел', '2025-05-01T06:33:00.243Z', [
+                7, 'Комарницкий Павел', '2025-05-01T06:33:00.243Z', [
                     [1, "{% static 'img/forTest/1.jpg' %}"], 
                     [2, "{% static 'img/forTest/2.jpg' %}"], 
                     [3, "{% static 'img/forTest/3.jpg' %}"], 
@@ -242,7 +395,7 @@ let ajax = {
                 ],
             ],
             [
-                2, 'Комарницкий Павел', '2025-05-01T06:48:00.243Z', [
+                9, 'Комарницкий Павел', '2025-05-01T06:48:00.243Z', [
                     [7, "{% static 'img/forTest/1.jpg' %}"], 
                     [8, "{% static 'img/forTest/2.jpg' %}"], 
                     [9, "{% static 'img/forTest/3.jpg' %}"], 
@@ -272,15 +425,15 @@ let ajax = {
 
     },
     run: function() {
-        this.auth = this.getAuthId()
+        this.authId = this.getAuthId()
         this.recordId = this.getRecordId()
     }
 }
 ajax.run()
 
 let content = {
-    theme: null,
-    content: [], // all content ids like [{type, id}, ...]. Type is note or imagesGroup
+    theme: null, // title of whole record
+    content: [], // all content ids like [{type, id}, ...] by date. Type is note or imagesGroup
     notes: {}, // notes objs like {id: this.Note, ...}
     images: {}, // images objs like {id: this.Image, ...}
     imagesGroups: {}, // images groups like {groupId: this.ImagesGroup, ...}
@@ -301,7 +454,7 @@ let content = {
         this.date = new Date(date) //str
         this.content = images //list of numeric ids
     },
-    getContent: function() {
+    getContent: function() { // getting notes, images, images groups and content using ajax
         let rawNotes = ajax.getNotes()
         for (let i=0; i<rawNotes.length; i++) {
             this.notes[rawNotes[i][0]] = new this.Note(...rawNotes[i])
@@ -352,7 +505,44 @@ let content = {
             }
         }
     },
-    viewContent: function() {
+    delContent: function(event) { // event of deletion any type content by cross
+        let cross = event.target.closest('.cross')
+        if (!cross) return
+        let record = cross.closest('.record')
+        let images = cross.closest('.images')
+        if (record) this.delNote(record.id)
+        if (images) this.delImages(images.id)
+    },
+    delNote: function(recordId) { // event of deletion any note
+        delete this.notes[Number(recordId)]
+        for (let i=0; i < this.content.length; i++) {
+            if (!this.content[i].type === 'note') continue
+            if (this.content[i].id === Number(recordId)) {
+                this.content.splice(i, 1)
+            }
+        }
+        // ajax delete note
+        this.viewContent()
+    },
+    delImages: function(imagesId) { // event of deletion any image group (with images)
+        for (let i=0; i<this.imagesGroups[Number(imagesId)].content.length; i++) {
+            let num = this.imagesGroups[Number(imagesId)].content[i]
+            delete this.images[num]
+        }
+        // ajax delete images
+        delete this.imagesGroups[Number(imagesId)]
+        for (let i=0; i < this.content.length; i++) {
+            if (!this.content[i].type === 'imagesGroup') continue
+            if (this.content[i].id === Number(imagesId)) {
+                this.content.splice(i, 1)
+            }
+        }
+        // ajax delete imagesGroups
+        this.viewContent()
+    },
+    viewContent: function() { // display all content using all properties
+        let content = document.getElementById('content')
+        content.innerHTML = ''
         for (let i=0; i<this.content.length; i++) {
             if (this.content[i].type === 'note') {
                 this.viewNote(this.content[i].id)
@@ -363,7 +553,7 @@ let content = {
             }
         }
     },
-    viewNote: function(noteId) {
+    viewNote: function(noteId) { // display a note block
         let content = document.getElementById('content')
         let record = this.createElement(
             tag = 'div',
@@ -395,11 +585,11 @@ let content = {
             parent = recordHeader,
             params = {textContent: this.notes[noteId].date},
         )
-        let cross = this.createElement(
-            tag = 'div',
-            classList = ['cross'],
+        let cross = this.createSVG(
             parent = recordHeader,
-            params = {textContent: 'X'},
+            className = 'cross',
+            viewBox = '0 0 512.021 512.021',
+            pathLst = ['M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z'],
         )
         let hr = this.createElement(
             tag = 'hr',
@@ -414,7 +604,7 @@ let content = {
             params = {textContent: this.notes[noteId].content},
         )
     },
-    viewImages: function(groupId) {
+    viewImages: function(groupId) { // display an images block
         let content = document.getElementById('content')
         let images = this.createElement(
             tag = 'div',
@@ -470,13 +660,12 @@ let content = {
                 params = {src: this.images[imagesList[i]].path, id:imagesList[i]},
             )
         }
-        let cross = this.createElement(
-            tag = 'div',
-            classList = ['cross'],
+        let cross = this.createSVG(
             parent = slider,
-            params = {textContent: 'X'},
+            className = 'cross',
+            viewBox = '0 0 512.021 512.021',
+            pathLst = ['M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z'],
         )
-
         let sliderDirecrionRight = this.createElement(
             tag = 'div',
             classList = ['slide-direction'],
@@ -497,7 +686,7 @@ let content = {
             pathLst=['M6.079,22.5a1.5,1.5,0,0,1,.44-1.06l7.672-7.672a2.5,2.5,0,0,0,0-3.536L6.529,2.565A1.5,1.5,0,0,1,8.65.444l7.662,7.661a5.506,5.506,0,0,1,0,7.779L8.64,23.556A1.5,1.5,0,0,1,6.079,22.5Z',]
         )
     },
-    createElement: function(tag, classList, parent, params) {
+    createElement: function(tag, classList, parent, params) { // create usual HTML elem
         let element = document.createElement(tag)
         for (let i=0; i<classList.length; i++) {
             element.classList.add(classList[i])
@@ -508,7 +697,7 @@ let content = {
         parent.appendChild(element)
         return element
     },
-    createSVG: function(parent, className, viewBox, pathLst) {
+    createSVG: function(parent, className, viewBox, pathLst) { // create usual HTML svg elem
         let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
         svg.setAttributeNS(null, 'class', className)
         svg.setAttributeNS(null, 'viewBox', viewBox)
@@ -524,20 +713,295 @@ let content = {
     run: function() {
         this.getContent()
         this.viewContent()
+        let content = document.getElementById('content')
+        content.addEventListener('click', this.delContent.bind(this))
     }
 }
 content.run()
 
+let settings = {
+    friendsCommtents: false, // can friends comment?
+    modal: null, // current active modal
+    password: false, // does it exist?
+    names: [], // list of friends names
 
-// let now1 = new Date()
-// for (let i=0; i<10000; i++) {}
-// let now2 = new Date()
-// console.log('comparison', now1 == now2)
-// let nowJSON = now.toJSON()
-// let nowFromJSON = new Date(nowJSON)
-// console.log('now', now)
-// console.log('nowJSON', nowJSON)
-// console.log('nowFromJSON', nowFromJSON)
+    modals: {
+        addFriend: function(event) { // display the modal of friend adding
+            let modalId = 'addFriendBtn'
+            this.modals.viewModal.bind(this)('addFriendModal')
+        },
+        friendComment: function(event) { // display the modal of permission friends to comment
+            if (event.target.type != 'checkbox') return
+            if (event.target.checked) return
+            let modalId = 'friendCommentsModal'
+            this.modals.viewModal.bind(this)('friendCommentsModal')
+            event.preventDefault()
+        },
+        createPassword: function(event) { // display the modal of password creation
+            let passwordInput = document.getElementById('passwordInput')
+            if (passwordInput.value === '') return
+            let modalId = 'crPasswordModal'
+            this.modals.viewModal.bind(this)('crPasswordModal')
+        },
+        deletePassword: function(event) { // display the modal of password deletion
+            let modalId = 'delPasswordModal'
+            this.modals.viewModal.bind(this)('delPasswordModal')
+        },
+        deleteRecord: function(event) { // display the modal of whole record deletion
+            let btn = document.getElementById('deleteRecordBtn')
+            btn.blur()
+            let modalId = 'deleteRecordModal'
+            this.modals.viewModal.bind(this)('deleteRecordModal')
+        },
+        viewModal: function(modalId) { // display the required modal
+            this.modal = document.getElementById(modalId)
+            this.modal.style['display'] = 'block'
+            modalBlock.style['display'] = 'block'
+        },
+        hideModal: function(event) { // hide any modal
+            if (
+                (event.target != globalShadow) &&
+                // (event.currentTarget != modalCross) &&
+                (event.key != 'Escape')
+            ) return
+            if (!this.modal) return
+            modalBlock.style['display'] = 'none'
+            this.modal.style['display'] = 'none'
+        },
+        hideModalCross: function(event) { // hide any modal by cross
+            if (event.target.closest('.modal-cross')) {
+                modalBlock.style['display'] = 'none'
+                this.modal.style['display'] = 'none'
+            }
+        },
+        run: function() {
+            let modalBlock = document.getElementById('modalBlock')
+            modalBlock.addEventListener('click', this.modals.hideModal.bind(this))
+            document.addEventListener('keyup', this.modals.hideModal.bind(this))
+            document.addEventListener('click', this.modals.hideModalCross.bind(this))
+
+            let addFriendBtn = document.getElementById('addFriendBtn')
+            let friendCommentsBtn = document.getElementById('friendCommentsBtn')
+            let setPasswordSiteBtn = document.getElementById('setPasswordSiteBtn')
+            let delPasswordSiteBtn = document.getElementById('delPasswordSiteBtn')
+            let DeleteRecordBtn = document.getElementById('deleteRecordBtn')
+            addFriendBtn.addEventListener('click', this.modals.addFriend.bind(this))
+            friendCommentsBtn.addEventListener('click', this.modals.friendComment.bind(this))
+            setPasswordSiteBtn.addEventListener('click', this.modals.createPassword.bind(this))
+            delPasswordSiteBtn.addEventListener('click', this.modals.deletePassword.bind(this))
+            DeleteRecordBtn.addEventListener('click', this.modals.deleteRecord.bind(this))
+        }
+    },
+    friendsSite: {
+        getNamesList: function() { // getting a names list (ajax)
+            searchListTest = [ // заглушка
+                'Комарницкий Павел',
+            ]
+            for (let name of searchListTest) {
+                this.names.push(name)
+            }
+        },
+        viewNamesList: function() { // display the friends list
+            let friendsArea = document.getElementById('friendsArea')
+            friendsArea.innerHTML = ''
+            for (name_i of this.names) {
+                let friend = content.createElement('div', ['friend'], friendsArea, {})
+                let name = content.createElement(
+                    tag = 'div',
+                    classList = ['name'],
+                    parent = friend,
+                    params = {textContent: name_i},
+                )
+                let cross = content.createSVG(
+                    friend,
+                    'cross',
+                    viewBox='0 0 512.021 512.021',
+                    pathLst=['M301.258,256.01L502.645,54.645c12.501-12.501,12.501-32.769,0-45.269c-12.501-12.501-32.769-12.501-45.269,0l0,0   L256.01,210.762L54.645,9.376c-12.501-12.501-32.769-12.501-45.269,0s-12.501,32.769,0,45.269L210.762,256.01L9.376,457.376   c-12.501,12.501-12.501,32.769,0,45.269s32.769,12.501,45.269,0L256.01,301.258l201.365,201.387   c12.501,12.501,32.769,12.501,45.269,0c12.501-12.501,12.501-32.769,0-45.269L301.258,256.01z',]
+                )
+            }
+        },
+        addName: function(event) { // addition a new friend
+            let name = event.target.textContent
+            this.names.push(name)
+            this.friendsSite.viewNamesList.bind(this)()
+            let friendNameInput = document.getElementById('friendNameInput')
+            friendNameInput.value = ''
+            // ajax
+        },
+        delName: function(event) { // deletion any friend by cross in this.names
+            let cross = event.target.closest('.cross')
+            if (!cross) return
+            let name = cross.previousSibling.textContent
+            this.names = this.names.filter((name_i) => name_i !== name)
+            this.friendsSite.viewNamesList.bind(this)()
+            // ajax
+        },
+        getInputNamesList: function() {  // getting a names list
+            searchListTest = [ // Заглушка для теста до получения настоящего контента
+                'Комарницкий Павел',
+                'Тепляков Сергей',
+                'Иутин Иван',
+                'Килюшин Александр',
+                'Комарницкий Александр',
+                'Сахапов Артур',
+                'Комарницкий Павел 2',
+                'Тепляков Сергей 2',
+                'Иутин Иван 2',
+                'Килюшин Александр 2',
+                'Комарницкий Александр 2',
+                'Сахапов Артур 2',
+            ]
+
+            return searchListTest
+        },
+        showInputNamesList: function(event) {  // display the drop down list
+            if (event.target != friendNameInput) return // событие вне нашего поля (доп. проверка)
+
+            let searchValueUpper = friendNameInput.value.toUpperCase()
+            if (searchValueUpper == '') { // если поисковое имя удалено
+                namesDropdown.style['display'] = 'none'
+                namesDropdown.innerHTML = ''
+                return
+            }
+
+            namesDropdown.style['display'] = 'block'
+            namesDropdown.innerHTML = ''
+            searchListOriginal = this.friendsSite.getInputNamesList()
+            seacrhListFiltered = []
+            for (let i = 0; i < searchListOriginal.length; i++) {
+                if (
+                    (searchListOriginal[i].toUpperCase().includes(searchValueUpper)) &&
+                    (!this.names.includes(searchListOriginal[i]))
+                ) {
+                    seacrhListFiltered.push(searchListOriginal[i])
+                }
+            }
+            if (seacrhListFiltered.length == 0) namesDropdown.style['display'] = 'none'
+
+            for (let i = 0; i < seacrhListFiltered.length; i++) {
+                searchElemI = document.createElement('p')
+                searchElemI.className = 'friend-name'
+                searchElemI.innerHTML = seacrhListFiltered[i]
+                namesDropdown.append(searchElemI)
+            }
+        },
+        hideInputNamesList: function(event) {  // deletion the drop down list
+            if (namesDropdown.style['display'] != 'block') return // drop down list doesn't exist
+            if (event.target == friendNameInput) return // clock on the search bar
+            namesDropdown.style['display'] = 'none'
+            namesDropdown.innerHTML = ''
+        },
+        run: function() {
+            let namesDropdown = document.getElementById('namesDropdown')
+            let friendsArea = document.getElementById('friendsArea')
+            namesDropdown.addEventListener('click', this.friendsSite.addName.bind(this))
+            friendsArea.addEventListener('click', this.friendsSite.delName.bind(this))
+            this.friendsSite.getNamesList.bind(this)()
+            this.friendsSite.viewNamesList.bind(this)()
+            friendNameInput.addEventListener('input', this.friendsSite.showInputNamesList.bind(this))
+            document.addEventListener('click', this.friendsSite.hideInputNamesList.bind(this))
+        }
+    },
+    otherSite: {
+        disableComments: function(event) { // btn of comments toggle
+            // ajax disable friends comments
+            let input = document.getElementById('friendCommentsBtn').children[0]
+            input.checked = !input.checked
+            this.friendsCommtents = !this.friendsCommtents
+            this.otherSite.hideModalBtn.bind(this)()
+        },
+        setPassword: function(event) { // btn of password setting
+            // ajax set password
+            let passwordInput = document.getElementById('passwordInput')
+            
+            let blank = '*'.repeat(passwordInput.value.length)
+            passwordInput.value = blank
+            passwordInput.style['background-color'] = 'rgb(150, 250, 170)'
+            this.otherSite.hideModalBtn.bind(this)()
+
+            setTimeout(()=>{
+                passwordInput.value = ''
+                passwordInput.style['background-color'] = ''
+                this.password = true
+                this.otherSite.viewPasswordSite.bind(this)()
+            }, 1500)
+        },
+        delPassword: function(event) { // btn of password deletion
+            // ajax check
+            if (false) return
+            // ajax password update
+            this.password = false
+            delPasswordInput.value = ''
+            this.otherSite.viewPasswordSite.bind(this)()
+            this.otherSite.hideModalBtn.bind(this)()
+        },
+        delPasswordCansel: function(event) { // cansel btn of password deletion
+            let delPasswordInput = document.getElementById('delPasswordInput')
+            delPasswordInput.value = ''
+            this.otherSite.hideModalBtn.bind(this)()
+        },
+        delRecord: function(event) { // btn of whole record deletion
+            // ajax del whole record
+            window.location.pathname = '/notes'
+        },
+        hideModalBtn: function() { // hide any modal by inner btn click
+            if (!this.modal) return
+            modalBlock.style['display'] = 'none'
+            this.modal.style['display'] = 'none'
+        },
+        toggleFriendsCommtents: function() { // input btn of toggle this.friendsCommtents
+            if (this.friendsCommtents) return
+            this.friendsCommtents = !this.friendsCommtents
+        },
+        viewPasswordSite: function() { // display one of two password site
+            let setPasswordSite = document.getElementById('setPasswordSite')
+            let delPasswordSite = document.getElementById('delPasswordSite')
+            if (this.password) {
+                setPasswordSite.style['display'] = 'none'
+                delPasswordSite.style['display'] = 'flex'
+            } else {
+                setPasswordSite.style['display'] = 'flex'
+                delPasswordSite.style['display'] = 'none'
+            }
+        },
+        run: function() {
+            let disableCommentsBtn = document.getElementById('disableCommentsBtn')
+            let disableCommentsCanselBtn = document.getElementById('disableCommentsCanselBtn')
+            let setPasswordBtn = document.getElementById('setPasswordBtn')
+            let setPasswordCanselBtn = document.getElementById('setPasswordCanselBtn')
+            let delPasswordBtn = document.getElementById('delPasswordBtn')
+            let delPasswordCanselBtn = document.getElementById('delPasswordCanselBtn')
+            let delRecordBtn = document.getElementById('delRecordBtn')
+            let delRecordCanselBtn = document.getElementById('delRecordCanselBtn')
+            disableCommentsBtn.addEventListener('click',this.otherSite.disableComments.bind(this))
+            disableCommentsCanselBtn.addEventListener('click', this.otherSite.hideModalBtn.bind(this))
+            setPasswordBtn.addEventListener('click', this.otherSite.setPassword.bind(this))
+            setPasswordCanselBtn.addEventListener('click', this.otherSite.hideModalBtn.bind(this))
+            delPasswordBtn.addEventListener('click', this.otherSite.delPassword.bind(this))
+            delPasswordCanselBtn.addEventListener('click', this.otherSite.delPasswordCansel.bind(this))
+            delRecordBtn.addEventListener('click', this.otherSite.delRecord.bind(this))
+            delRecordCanselBtn.addEventListener('click', this.otherSite.hideModalBtn.bind(this))
+        
+            this.otherSite.viewPasswordSite.bind(this)()
+        }
+    },
+    viewSettings: function() {  // view hidden settings
+        // https://www.w3schools.com/howto/howto_js_accordion.asp
+        let settings = document.getElementById('settings')
+        if (settings.style.maxHeight) {
+            settings.style.maxHeight = null;
+        } else {
+            settings.style.maxHeight = settings.scrollHeight + "px";
+        }
+    },
+    run: function() {
+        this.modals.run.bind(this)()
+        this.friendsSite.run.bind(this)()
+        this.otherSite.run.bind(this)()
+    }
+}
+settings.run()
+
 
 </script>
 {% endblock content %}
