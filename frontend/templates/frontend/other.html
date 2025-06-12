@@ -80,18 +80,31 @@ input:checked + .slider:before {
 
 
 <script>
-    let changeTheme = function() {
-    
-        if (themeStyle.checked == true) {
-            globalStyle.classList.remove(globalStyle.classList[1])
-            globalStyle.classList.add('black-theme')
-        } else if (themeStyle.checked == false) {
-            globalStyle.classList.remove(globalStyle.classList[1])
-            globalStyle.classList.add('white-theme')
-        }
-        
-    }
-    
-    </script>
+let changeTheme = function() {
+  if (themeStyle.checked == true) {
+    globalStyle.classList.remove(globalStyle.classList[1])
+    globalStyle.classList.add('black-theme')
+  } else if (themeStyle.checked == false) {
+    globalStyle.classList.remove(globalStyle.classList[1])
+    globalStyle.classList.add('white-theme')
+  } 
+}
+</script>
+
+<!-- Air-DatePicker -->
+<input type="text" class="datepicker-here form-control" id="datepicker">
+<script>
+// https://codepen.io/ankithingarajiya/pen/jjOxMo
+$('#datepicker').datepicker({
+    language: 'ru',
+    minDate: new Date(),
+    dateFormat: 'dd.mm.yyyy',
+    // isMobile: true,
+    autoClose: true,
+    date: new Date(),
+})
+.data('datepicker')
+.selectDate(new Date())
+</script>
 
 {% endblock content %}

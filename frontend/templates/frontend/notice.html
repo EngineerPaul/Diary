@@ -32,55 +32,6 @@
 </div>
 </div>
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<input type="text" id="datepicker">
-<script>
-
-$(document).ready(function(){
-    $("#datepicker").datepicker();
-});
-$("#datepicker").datepicker({
-    // dateFormat: "dd-mm-yy", // Формат отображения даты
-    // showButtonPanel: true, // Отображать панель с кнопками (OK, Cancel)
-    defaultDate: new Date(), // Установить текущую дату по умолчанию
-    // minDate: "01/01/2020", // Минимальная допустимая дата
-    // maxDate: "+1Y", // Максимальная допустимая дата (через год от текущей)
-    beforeShow: function(input, inst) {
-        // Выполнить действия перед показом календаря
-    }
-});
-let datepicker = document.getElementById('datepicker')
-
-let now = new Date()
-now = String(now.getDate()) + '-' + String(now.getMonth()) + '-' + String(now.getFullYear())
-console.log('now', now)
-datepicker.value = now
-        /* Локализация datepicker */
-$.datepicker.regional['ru'] = {
-	closeText: 'Закрыть',
-	prevText: 'Предыдущий',
-	nextText: 'Следующий',
-	currentText: 'Сегодня',
-	monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
-	monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
-	dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
-	dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
-	dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
-	weekHeader: 'Не',
-	dateFormat: 'dd.mm.yy',
-	// firstDay: 1,
-	isRTL: false,
-	// showMonthAfterYear: false,
-	yearSuffix: ''
-};
-$.datepicker.setDefaults($.datepicker.regional['ru']);
-</script>
-
-<input type="text" placeholder="***">
-<input id="datefrom" placeholder="От (Год-Месяц-День)" type="search" name="datefrom" value="" --data-request="onDateFilter" class="form-control growable" autocomplete="off" style="width:250px; margin-top: 0px;"> -->
-
 <script>
 let dates = {
     newDateBtnList: null,
@@ -230,8 +181,9 @@ let dates = {
             tag = 'input',
             classList = ['dateFormInput'],
             parent = dateRow,
-            params = {id: 'date', name: 'date', type: 'date', style: 'width: auto'},
+            params = {id: 'date', name: 'date', type: 'text'},
         )
+        this.createAirDatePicker(date)
         
         let timeLabel = this.createElement(
             tag = 'div',
@@ -1087,6 +1039,18 @@ let dates = {
         return svg
         // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js    
     },
+    createAirDatePicker: function(field) {
+        // https://air-datepicker.com/ru
+        // https://www.jsdelivr.com/package/npm/air-datepicker
+        new AirDatepicker(field, {
+            minDate: new Date(),
+            dateFormat: 'dd.MM.yyyy',
+            isMobile: isMobile(),
+            autoClose: true,
+            // inline: true,
+        })
+        .selectDate(new Date())
+    },
     run: function() {
         this.newDateBtnList = document.getElementById('newDateBtnList')
         let addDateBtn = document.getElementById('addDateBtn')
@@ -1094,8 +1058,14 @@ let dates = {
     }
 }
 dates.run()
+
+function isMobile() {
+    // https://sky.pro/media/kak-opredelit-tip-ustrojstva-polzovatelya-s-pomoshhyu-javascript/
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isMobile = /mobile|iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(userAgent);
+    if (isMobile) return true
+    else return false
+}
 </script>
-
-
 
 {% endblock content %}

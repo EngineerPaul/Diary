@@ -180,3 +180,9 @@ label.switch {
         }
     }
 }
+
+.air-datepicker-global-container { /* Air DatePicker */
+    .air-datepicker-cell.-day-.-weekend-:not(.-disabled-, .-other-month-) {
+        color: #e93c3c;
+    }
+}
