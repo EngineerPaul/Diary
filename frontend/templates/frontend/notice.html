@@ -137,7 +137,7 @@ let dates = {
     },
     
     // forms views
-    viewOneDayField: function() {
+    viewOneDayField: function() { // display one day form
         this.newDateBtnList.innerHTML = ''
         let dateForm = this.createElement(
             tag = 'form',
@@ -205,7 +205,7 @@ let dates = {
         time.addEventListener('keydown', this.timeInput.bind(this))
         submitBtn.addEventListener('click', this.OneDaySubmit.bind(this))
     },
-    viewEveryDayField: function() {
+    viewEveryDayField: function() { // display every day form
         this.newDateBtnList.innerHTML = ''
         let dateForm = this.createElement(
             tag = 'form',
@@ -284,7 +284,7 @@ let dates = {
         time.addEventListener('keydown', this.timeInput.bind(this))
         submitBtn.addEventListener('click', this.EveryDaySubmit.bind(this))
     },
-    viewEveryWeekField: function() {
+    viewEveryWeekField: function() { // display every week form
         this.newDateBtnList.innerHTML = ''
         let dateForm = this.createElement(
             tag = 'form',
@@ -459,7 +459,7 @@ let dates = {
         periodicLastInput.addEventListener('input', this.weekPeriodicityLimiter.bind(this))
         submitBtn.addEventListener('click', this.EveryWeekSubmit.bind(this))
     },
-    viewEveryMonthField: function() {
+    viewEveryMonthField: function() { // display every month form
         this.newDateBtnList.innerHTML = ''
         let dateForm = this.createElement(
             tag = 'form',
@@ -557,7 +557,7 @@ let dates = {
         time.addEventListener('keydown', this.timeInput.bind(this))
         submitBtn.addEventListener('click', this.EveryMonthSubmit.bind(this))
     },
-    viewEveryYearField: function() {
+    viewEveryYearField: function() { // display every year form
         this.newDateBtnList.innerHTML = ''
         let dateForm = this.createElement(
             tag = 'form',
@@ -678,7 +678,7 @@ let dates = {
     },
     
     // form fields limiters
-    timeInAutoFill: function(event) {
+    timeInAutoFill: function(event) { // time input decorator
         let time = document.getElementById('time')
         if (time.value.length === 1 && Number(time.value) > 2) {
             time.value = "0" + time.value + ":" + "00"
@@ -690,7 +690,7 @@ let dates = {
             time.selectionEnd = 3
         }
     },
-    timeInput: function(event) {
+    timeInput: function(event) { // time input decorator
         let colonId = event.target.value.indexOf(':')
         if (colonId && event.key == ':') { // запрет второго двоеточия
             event.preventDefault()
@@ -734,20 +734,20 @@ let dates = {
             return
         }
     },
-    numInput: function(event) {
+    numInput: function(event) { // input is num only
         let normalkeys = ['Backspace', 'Delete', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']
         if (event.key.match(/\d/) || normalkeys.includes(event.key)) {
             return
         }
         event.preventDefault()
     },
-    dayInput: function(event) {
+    dayInput: function(event) { // day max is 31
         if (Number(event.target.value)*10 + Number(event.key) > 31) {
             event.target.value = 31
             event.preventDefault()
         }
     },
-    weekPeriodicityLimiter: function(event) {
+    weekPeriodicityLimiter: function(event) { // week period one of three
         let form = document.getElementById('dateForm')
         let numField = form.periodic
         let firstField = form.firstWeekCheckbox
@@ -759,7 +759,7 @@ let dates = {
     },
 
     // forms submit
-    OneDaySubmit: function(event) {
+    OneDaySubmit: function(event) { // send one day ajax
         event.preventDefault()
         let form = document.getElementById('dateForm')
         this.dateOneDayValid(form)
@@ -780,7 +780,7 @@ let dates = {
             month=null
         )
     },
-    EveryDaySubmit: function(event) {
+    EveryDaySubmit: function(event) { // send every day ajax
         event.preventDefault()
         let form = document.getElementById('dateForm')
         this.dateDayValid(form)
@@ -801,7 +801,7 @@ let dates = {
             month=null
         )
     },
-    EveryWeekSubmit: function(event) {
+    EveryWeekSubmit: function(event) { // send every week ajax
         event.preventDefault()
         let form = document.getElementById('dateForm')
         this.dateWeekValid(form)
@@ -828,7 +828,7 @@ let dates = {
             month=null
         )
     },
-    EveryMonthSubmit: function(event) {
+    EveryMonthSubmit: function(event) { // send every month ajax
         event.preventDefault()
         let form = document.getElementById('dateForm')
         this.dateMonthValid(form)
@@ -849,7 +849,7 @@ let dates = {
             month=null
         )
     },
-    EverYearSubmit: function(event) {
+    EverYearSubmit: function(event) { // send every year ajax
         event.preventDefault()
         let form = document.getElementById('dateForm')
         this.dateYearValid(form)
@@ -872,25 +872,28 @@ let dates = {
     },
 
     // forms validation
-    dateOneDayValid: function(form) {
+    dateOneDayValid: function(form) { // validation of the one day form
         this.errors = []
-
-        let date = new Date(form.date.value)
-        if (isNaN(date)) {
-            this.errors.push(`Неверный формат даты`)
-        }
+        this.datePickerValid(form.date.value)
         this.timeValid(form.time.value)
         if (this.errors.length != 0) return
 
-        date.setHours(form.time.value.slice(0,2))
-        date.setMinutes(form.time.value.slice(3,5))
+        let dateObj = {
+            y: form.date.value.slice(6,),
+            m: form.date.value.slice(3,5),
+            d: form.date.value.slice(0,2),
+            h: form.time.value.slice(0,2),
+            mm: form.time.value.slice(3,5)
+        }
+        let date = new Date(dateObj.y, dateObj.m-1, dateObj.d, 
+            dateObj.h, dateObj.mm)
         let now = new Date()
         if (date<now) {  // date добавить время
             this.errors.push(`Указана прошедшая дата`)
             return
         }
     },
-    dateDayValid: function(form) {
+    dateDayValid: function(form) { // validation of the every day form
         this.errors = []
         this.numValid(
             value=form.periodic.value,
@@ -900,7 +903,7 @@ let dates = {
         )
         this.timeValid(form.time.value)
     },
-    dateWeekValid: function(form) {
+    dateWeekValid: function(form) { // validation of the every week form
         this.errors = []
         this.numValid(
             value=form.weekDays.value,
@@ -918,7 +921,7 @@ let dates = {
         }
         this.timeValid(form.time.value)
     },
-    dateMonthValid: function(form) {
+    dateMonthValid: function(form) { // validation of the every month form
         this.errors = []
         this.numValid(
             value=form.day.value,
@@ -934,7 +937,7 @@ let dates = {
         )
         this.timeValid(form.time.value)
     },
-    dateYearValid: function(form) {
+    dateYearValid: function(form) { // validation of the every year form
         this.errors = []
         this.numValid(
             value=form.day.value,
@@ -956,12 +959,9 @@ let dates = {
         )
         this.timeValid(form.time.value)
     },
-    timeValid: function(timeStr) {
+    timeValid: function(timeStr) { // validation of the time field
         if (
-            timeStr.length != 5 ||
-            !Number(timeStr.slice(0,2)) ||
-            (!Number(timeStr.slice(3,5)) && Number(timeStr.slice(3,5)) !==0) ||
-            timeStr.slice(2,3) != ':' ||
+            !/^\d{2}\:\d{2}$/.test(timeStr) ||
             Number(timeStr.slice(0,2)) > 23 ||
             Number(timeStr.slice(3,5)) > 59
         ) {
@@ -970,7 +970,7 @@ let dates = {
         }
         return true
     },
-    numValid: function(value, fieldName, min, max) {
+    numValid: function(value, fieldName, min, max) { // validation of the number field
         let num = Number(value)
         if (isNaN(num)) {
             this.errors(`В поле ${fieldName} должно быть указано число`)
@@ -986,9 +986,14 @@ let dates = {
         }
         return true
     },
-    // periodicWeekValid: function(event) {},
+    datePickerValid: function(dateStr) { // validation of the datePicker field
+        let datePattern = /^\d{2}\.\d{2}\.\d{4}$/
+        if (!datePattern.test(dateStr)) {
+            this.errors.push('Неверный формат даты')
+        }
+    },
 
-    displayErrors: function() {
+    displayErrors: function() { // show validation errors
         let errorsField = document.getElementById('errorsField')
         
         for (let error of this.errors)  {
@@ -1039,7 +1044,7 @@ let dates = {
         return svg
         // https://ru.stackoverflow.com/questions/1123250/%D0%9A%D0%B0%D0%BA-%D0%B2%D1%81%D1%82%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-svg-%D0%BA%D0%BE%D0%B4-%D0%BD%D0%B0-%D1%81%D0%B0%D0%B9%D1%82-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-js    
     },
-    createAirDatePicker: function(field) {
+    createAirDatePicker: function(field) { // create datepicker object in the one day form
         // https://air-datepicker.com/ru
         // https://www.jsdelivr.com/package/npm/air-datepicker
         new AirDatepicker(field, {
