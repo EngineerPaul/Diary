@@ -179,9 +179,9 @@ let dates = {
         )
         let date = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput'],
+            classList = ['dateFormInput', 'form-control'],
             parent = dateRow,
-            params = {id: 'date', name: 'date', type: 'text'},
+            params = {id: 'date', name: 'date', type: 'text', placeholder: 'дд.мм.гггг'},
         )
         this.createAirDatePicker(date)
         
@@ -193,12 +193,12 @@ let dates = {
         )
         let time = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = timeRow,
             params = {type: "text", id: 'time', name: 'time', placeholder: '00:00'},
         )
 
-        this.newDateBtnList.style.height = this.newDateBtnList.scrollHeight + "px"
+        this.newDateBtnList.style.height = dateForm.scrollHeight + "px"
 
         time.addEventListener('input', this.timeInAutoFill.bind(this))
         time.addEventListener('paste', (e) => e.preventDefault())
@@ -247,7 +247,7 @@ let dates = {
         )
         let periodic = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = periodicRow,
             params = {type: "text", id: 'periodic', name: 'periodic'},
         )
@@ -255,7 +255,7 @@ let dates = {
             tag = 'span',
             classList = [],
             parent = periodicRow,
-            params = {textContent: 'дней'},
+            params = {textContent: 'дней', style: 'align-content: center;'},
         )
         
         let timeLabel = this.createElement(
@@ -266,12 +266,12 @@ let dates = {
         )
         let time = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = timeRow,
             params = {type: "text", id: 'time', name: 'time', placeholder: '00:00'},
         )
         
-        this.newDateBtnList.style.height = this.newDateBtnList.scrollHeight + "px"
+        this.newDateBtnList.style.height = dateForm.scrollHeight + "px"
         // let h = 0
         // for (let child of this.newDateBtnList.children) {
         //     h += child.offsetHeight
@@ -301,7 +301,7 @@ let dates = {
         )
         let periodicRow = this.createElement(
             tag = 'div',
-            classList = ['dateFormRow'],
+            classList = [],
             parent = dateForm,
             params = {},
         )
@@ -333,7 +333,7 @@ let dates = {
         )
         let weekDay = this.createElement(
             tag = 'select',
-            classList = [],
+            classList = ['form-control'],
             parent = dateRow,
             params = {name: 'weekDays'},
         )
@@ -363,7 +363,7 @@ let dates = {
         )
         let periodic = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = periodicRow1,
             params = {type: "text", id: 'periodic', name: 'periodic',},
         )
@@ -444,12 +444,12 @@ let dates = {
         )
         let time = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = timeRow,
             params = {type: "text", id: 'time', name: 'time', placeholder: '00:00'},
         )
         
-        this.newDateBtnList.style.height = this.newDateBtnList.scrollHeight + "px"
+        this.newDateBtnList.style.height = dateForm.scrollHeight + "px"
         periodic.addEventListener('keydown', this.numInput.bind(this))
         time.addEventListener('input', this.timeInAutoFill.bind(this))
         time.addEventListener('paste', (e) => e.preventDefault())
@@ -507,11 +507,10 @@ let dates = {
         )
         let day = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput'],
+            classList = ['dateFormInput', 'form-control'],
             parent = dayRow,
             params = {
-                id: 'day', name: 'day', placeholder: '00', 
-                style: 'width: 27px;'
+                id: 'day', name: 'day', placeholder: '00',
             },
         )
         
@@ -523,7 +522,7 @@ let dates = {
         )
         let periodic = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = periodicRow,
             params = {type: "text", id: 'periodic', 
                 name: 'periodic', placeholder: '0'},
@@ -543,12 +542,12 @@ let dates = {
         )
         let time = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = timeRow,
             params = {type: "text", id: 'time', name: 'time', placeholder: '00:00'},
         )
         
-        this.newDateBtnList.style.height = this.newDateBtnList.scrollHeight + "px"
+        this.newDateBtnList.style.height = dateForm.scrollHeight + "px"
         day.addEventListener('keydown', this.numInput.bind(this))
         day.addEventListener('keydown', this.dayInput.bind(this))
         periodic.addEventListener('keydown', this.numInput.bind(this))
@@ -611,12 +610,9 @@ let dates = {
         )
         let day = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput'],
+            classList = ['dateFormInput', 'form-control'],
             parent = dayRow,
-            params = {
-                id: 'day', name: 'day', placeholder: '00', 
-                style: 'width: 27px;'
-            },
+            params = {id: 'day', name: 'day', placeholder: '00',},
         )
 
         let monthLabel = this.createElement(
@@ -627,12 +623,9 @@ let dates = {
         )
         let month = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput'],
+            classList = ['dateFormInput', 'form-control'],
             parent = monthRow,
-            params = {
-                id: 'month', name: 'month', placeholder: '00', 
-                style: 'width: 27px;'
-            },
+            params = {id: 'month', name: 'month', placeholder: '00',},
         )
         
         let periodicLabel = this.createElement(
@@ -643,7 +636,7 @@ let dates = {
         )
         let periodic = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = periodicRow,
             params = {type: "text", id: 'periodic', name: 'periodic'},
         )
@@ -662,12 +655,12 @@ let dates = {
         )
         let time = this.createElement(
             tag = 'input',
-            classList = ['dateFormInput',],
+            classList = ['dateFormInput', 'form-control'],
             parent = timeRow,
             params = {type: "text", id: 'time', name: 'time', placeholder: '00:00'},
         )
         
-        this.newDateBtnList.style.height = this.newDateBtnList.scrollHeight + "px"
+        this.newDateBtnList.style.height = dateForm.scrollHeight + "px"
         day.addEventListener('keydown', this.numInput.bind(this))
         day.addEventListener('keydown', this.dayInput.bind(this))
         periodic.addEventListener('keydown', this.numInput.bind(this))
@@ -973,15 +966,15 @@ let dates = {
     numValid: function(value, fieldName, min, max) { // validation of the number field
         let num = Number(value)
         if (isNaN(num)) {
-            this.errors(`В поле ${fieldName} должно быть указано число`)
+            this.errors.push(`В поле ${fieldName} должно быть указано число`)
             return false
         }
         if (num<min) {
-            this.errors(`Минимальное значение в поле ${fieldName}: ${min}`)
+            this.errors.push(`Минимальное значение в поле ${fieldName}: ${min}`)
             return false
         }
         if (num>max) {
-            this.errors(`Максимальное значение в поле ${fieldName}: ${max}`)
+            this.errors.push(`Максимальное значение в поле ${fieldName}: ${max}`)
             return false
         }
         return true
@@ -1005,7 +998,8 @@ let dates = {
             )
             console.log('Error:', error)
         }
-        this.newDateBtnList.style.height = this.newDateBtnList.scrollHeight + "px"
+        let dateForm = document.getElementById('dateForm')
+        this.newDateBtnList.style.height = dateForm.scrollHeight + "px"
     },
     ajaxBlank: function(noticeId, date, time, type, periodicity, day, month) {
         // date - oneday only like "yyyy-mm-dd"

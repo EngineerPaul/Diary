@@ -17,6 +17,7 @@
     --content-button-color-hover: #9aecd1;
 
     --text-color-danger: #e74444;
+    --btn-border-color: rgb(104, 207, 202);
 }
 
 
@@ -815,33 +816,36 @@ body {
     }
     .date-field {
         .newDateBtnList {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
+            margin: 10px 0px;
             height: 0px;
+            max-width: 300px;
             transition: height .4s ease;
             overflow: hidden;
             align-items: center;
 
             .newDateBtnField {
-                margin-top: auto;
-                margin-bottom: auto;
+                margin: 5px 0px;
             }
             .newDateBtn {
                 max-width: 200px;
             }
             form.dateForm {
                 .dateFormRow {
+                    display: flex;
                     padding: 5px 0px;
 
                     .dateFormLabel {
                         display: inline;
+                        align-content: center;
+                        text-wrap: nowrap;
+                        margin-right: 10px;
                     }
                     .dateFormInput {
                         display: inline;
-                        width: 130px;
+                    }
+                    span {
+                        align-content: center;
                         margin-left: 10px;
-                        margin-right: 10px;
                     }
                 }
                 .dateError {
